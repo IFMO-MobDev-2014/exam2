@@ -68,7 +68,7 @@ public class MainActivity extends ActionBarActivity {
                         cr.insert(MyProvider.PLAYLIST_CONTENT, cv);
 
                         cnt++;
-                       // if (cnt == 100) break;
+                        if (cnt == 500) break;
                     }
                     return null;
                 }
