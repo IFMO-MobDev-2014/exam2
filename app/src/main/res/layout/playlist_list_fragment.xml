@@ -27,14 +27,14 @@
             android:layout_weight="1"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="@string/add_artist_playlist"
+            android:text="@string/add_genre_playlist"
             />
         <Button
             android:id="@+id/add_year_playlist"
             android:layout_weight="1"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="@string/add_artist_playlist"
+            android:text="@string/add_year_playlist"
             />
     </LinearLayout>
 

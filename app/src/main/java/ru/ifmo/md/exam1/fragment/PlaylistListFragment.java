@@ -1,8 +1,10 @@
 package ru.ifmo.md.exam1.fragment;
 
 import android.app.AlertDialog;
+import android.content.ContentValues;
 import android.content.DialogInterface;
 import android.database.Cursor;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
@@ -82,8 +84,55 @@ public class PlaylistListFragment extends Fragment implements LoaderManager.Load
                     public void onClick(DialogInterface dialog, int which) {
                         String value = ((EditText) layout.findViewById(R.id.edit)).getText().toString();
                         if (resId == R.id.add_year_playlist) {
+                            ContentValues cv = new ContentValues();
+                            cv.put(MyProvider.PLAYLISTS_NAME, value);
+                            Uri uri = getActivity().getContentResolver().insert(MyProvider.PLAYLISTS_CONTENT, cv);
+                            int plId = Integer.parseInt(uri.getLastPathSegment());
+                            Cursor allSongs = getActivity().getContentResolver().query(
+                                    MyProvider.SONGS_CONTENT,
+                                    null,
+                                    MyProvider.SONG_YEAR + " =? ",
+                                    new String[] {
+                                            value
+                                    }, null
+                            );
+                            allSongs.moveToFirst();
+                            for (int i = 0; i < allSongs.getCount(); i++) {
+                                cv = new ContentValues();
+                                cv.put(MyProvider.PLAYLIST_SONG_ID, allSongs.getInt(allSongs.getColumnIndexOrThrow(MyProvider.SONG_ID)));
+                                cv.put(MyProvider.PLAYLIST_PL_ID, plId);
 
+                                getActivity().getContentResolver().insert(
+                                        MyProvider.PLAYLIST_CONTENT, cv
+                                );
+                                allSongs.moveToNext();
+                            }
                             Log.d(getClass().getName(), "Create playlist by year " + value);
+                        } else if (resId == R.id.add_artist_playlist) {
+                            ContentValues cv = new ContentValues();
+                            cv.put(MyProvider.PLAYLISTS_NAME, value);
+                            Uri uri = getActivity().getContentResolver().insert(MyProvider.PLAYLISTS_CONTENT, cv);
+                            int plId = Integer.parseInt(uri.getLastPathSegment());
+                            Cursor allSongs = getActivity().getContentResolver().query(
+                                    MyProvider.SONGS_CONTENT,
+                                    null,
+                                    MyProvider.SONG_ARTIST + " =? ",
+                                    new String[] {
+                                            value
+                                    }, null
+                            );
+                            allSongs.moveToFirst();
+                            for (int i = 0; i < allSongs.getCount(); i++) {
+                                cv = new ContentValues();
+                                cv.put(MyProvider.PLAYLIST_SONG_ID, allSongs.getInt(allSongs.getColumnIndexOrThrow(MyProvider.SONG_ID)));
+                                cv.put(MyProvider.PLAYLIST_PL_ID, plId);
+
+                                getActivity().getContentResolver().insert(
+                                        MyProvider.PLAYLIST_CONTENT, cv
+                                );
+                                allSongs.moveToNext();
+                            }
+                            Log.d(getClass().getName(), "Create playlist by artist " + value);
                         }
                     }
                 }).create();
