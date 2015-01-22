@@ -41,6 +41,12 @@ public class PlaylistListFragment extends Fragment implements LoaderManager.Load
                 showDialog(v.getId());
             }
         });
+        view.findViewById(R.id.add_artist_playlist).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                showDialog(v.getId());
+            }
+        });
 
         ListView listView = (ListView) view.findViewById(R.id.playlist_list);
         adapter = new SimpleCursorAdapter(
@@ -116,9 +122,9 @@ public class PlaylistListFragment extends Fragment implements LoaderManager.Load
                             Cursor allSongs = getActivity().getContentResolver().query(
                                     MyProvider.SONGS_CONTENT,
                                     null,
-                                    MyProvider.SONG_ARTIST + " =? ",
+                                    MyProvider.SONG_ARTIST + " like ? ",
                                     new String[] {
-                                            value
+                                            "%" + value + "%"
                                     }, null
                             );
                             allSongs.moveToFirst();

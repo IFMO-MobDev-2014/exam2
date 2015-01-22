@@ -1,25 +1,20 @@
 package ru.ifmo.md.exam1;
 
-import android.app.AlertDialog;
 import android.app.ProgressDialog;
 import android.content.ContentResolver;
 import android.content.ContentValues;
-import android.content.DialogInterface;
 import android.net.Uri;
 import android.os.AsyncTask;
+import android.os.Bundle;
 import android.support.v4.app.FragmentManager;
 import android.support.v7.app.ActionBarActivity;
-import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.view.View;
-import android.widget.EditText;
 
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 
-import java.io.BufferedInputStream;
 import java.io.BufferedReader;
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -73,7 +68,7 @@ public class MainActivity extends ActionBarActivity {
                         cr.insert(MyProvider.PLAYLIST_CONTENT, cv);
 
                         cnt++;
-                        if (cnt == 100) break;
+                       // if (cnt == 100) break;
                     }
                     return null;
                 }
