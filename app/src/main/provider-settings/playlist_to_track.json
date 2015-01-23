@@ -1,0 +1,22 @@
+{
+    "fields": [
+	{
+	    "name": "playlist_id",
+	    "type": "Long",
+	    "nullable": false,
+	    "foreignKey": {
+		"table": "playlist",
+		"onDelete": "CASCADE"
+	    }
+	},
+	{
+	    "name": "track_id",
+	    "type": "Long",
+	    "nullable": false,
+	    "foreignKey": {
+		    "table": "track",
+		    "onDelete": "CASCADE"
+	    }
+	}
+    ]
+}

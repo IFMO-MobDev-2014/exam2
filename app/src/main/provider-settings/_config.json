@@ -1,0 +1,12 @@
+{
+    "syntaxVersion": "2",
+    "projectPackageId": "ru.ifmo.md.exam2",
+    "authority": "ru.ifmo.md.exam2.provider",
+    "providerJavaPackage": "ru.ifmo.md.exam2.provider",
+    "providerClassName": "MyContentProvider",
+    "sqliteOpenHelperClassName": "DatabaseHelper",
+    "sqliteOpenHelperCallbacksClassName": "DatabaseHelperCallbacks",
+    "databaseFileName": "exam2.db",
+    "databaseVersion": 1,
+    "enableForeignKeys": true,
+}

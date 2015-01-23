@@ -2,4 +2,17 @@
     <!-- Default screen margins, per the Android Design guidelines. -->
     <dimen name="activity_horizontal_margin">16dp</dimen>
     <dimen name="activity_vertical_margin">16dp</dimen>
+
+    <string-array name="genres">
+        <item>Alternative</item>
+        <item>Blues</item>
+        <item>Country</item>
+        <item>Electronic</item>
+        <item>Jazz</item>
+        <item>Pop</item>
+        <item>Raggie</item>
+        <item>Rap</item>
+        <item>Rock</item>
+        <item>Soul</item>
+    </string-array>
 </resources>

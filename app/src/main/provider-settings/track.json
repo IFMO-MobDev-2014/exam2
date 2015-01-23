@@ -1,0 +1,27 @@
+{
+    "fields": [
+	{
+	    "name": "title",
+	    "type": "String",
+	    "nullable": false,
+	    "index": true,
+	},
+	{
+    	"name": "author",
+    	"type": "String",
+        "nullable": false,
+        "index": true
+    },
+	{
+	    "name": "year",
+	    "type": "Integer",
+	    "nullable": false,
+        "index": true
+	},
+	{
+	    "name": "genres_mask",
+	    "type": "Long",
+	    "nullable": false
+	}
+    ]
+}
