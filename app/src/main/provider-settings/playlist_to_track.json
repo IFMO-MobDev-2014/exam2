@@ -6,7 +6,7 @@
 	    "nullable": false,
 	    "foreignKey": {
 		"table": "playlist",
-		"onDelete": "NO ACTION"
+		"onDelete": "CASCADE"
 	    }
 	},
 	{
@@ -15,7 +15,7 @@
 	    "nullable": false,
 	    "foreignkey": {
 		"table": "track",
-		"onDelete": "NO ACTION"
+		"onDelete": "CASCADE"
 	    }
 	}
     ]

@@ -3,8 +3,10 @@
  */
 package ru.ifmo.md.exam2.provider;
 
+import android.content.ContentValues;
 import android.content.Context;
 import android.content.res.AssetManager;
+import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 
 import android.util.Log;
@@ -18,15 +20,19 @@ import java.util.List;
 import ru.ifmo.md.exam2.BuildConfig;
 import ru.ifmo.md.exam2.Track;
 import ru.ifmo.md.exam2.TracksParser;
+import ru.ifmo.md.exam2.provider.playlist.PlaylistColumns;
 import ru.ifmo.md.exam2.provider.playlist.PlaylistContentValues;
+import ru.ifmo.md.exam2.provider.playlist.PlaylistCursor;
 import ru.ifmo.md.exam2.provider.playlist.PlaylistSelection;
+import ru.ifmo.md.exam2.provider.playlisttotrack.PlaylistToTrackColumns;
 import ru.ifmo.md.exam2.provider.playlisttotrack.PlaylistToTrackContentValues;
+import ru.ifmo.md.exam2.provider.track.TrackColumns;
 import ru.ifmo.md.exam2.provider.track.TrackCursor;
 import ru.ifmo.md.exam2.provider.track.TrackSelection;
 
 /**
  * Implement your custom database creation or upgrade code here.
- *
+ * <p/>
  * This file will not be overwritten if you re-run the content provider generator.
  */
 public class DatabaseHelperCallbacks {
@@ -47,38 +53,51 @@ public class DatabaseHelperCallbacks {
 
         PlaylistContentValues contentValues = new PlaylistContentValues();
         contentValues.putName("All");
-        contentValues.insert(context.getContentResolver());
+        db.insert(PlaylistColumns.TABLE_NAME, null, contentValues.values());
 
-        long playlistId = new PlaylistSelection()
-                .name("All")
-                .query(context.getContentResolver())
-                .getId();
+        PlaylistSelection playlistSel = new PlaylistSelection()
+                .name("All");
+        Cursor basePlaylistCursor = db.query(PlaylistColumns.TABLE_NAME, null,
+                playlistSel.sel(), playlistSel.args(), null, null, null);
+        basePlaylistCursor.moveToFirst();
+        PlaylistCursor playlistCursor = new PlaylistCursor(basePlaylistCursor);
+        long playlistId = playlistCursor.getId();
 
-        AssetManager assetManager = context.getAssets();
+        AssetManager assetManager = null;
         try {
+            assetManager = context.getAssets();
             db.beginTransaction();
             InputStream is = assetManager.open("music.txt");
             List<Track> tracks = TracksParser.parse(is);
             for (Track track : tracks) {
-                track.toContentValues().insert(context.getContentResolver());
+                db.insert(TrackColumns.TABLE_NAME, null, track.toContentValues().values());
             }
             db.setTransactionSuccessful();
         } catch (IOException | JSONException e) {
             Log.d("ParseAssets", e.getMessage());
         } finally {
             db.endTransaction();
+            if (assetManager != null) {
+                assetManager.close();
+            }
         }
 
-        TrackCursor cursor = new TrackSelection().query(context.getContentResolver());
+        TrackSelection query = new TrackSelection();
+        Cursor baseTrackCursor = db.query(TrackColumns.TABLE_NAME,
+                null,
+                query.sel(), query.args(), null, null, null);
+        baseTrackCursor.moveToFirst();
+        TrackCursor cursor = new TrackCursor(
+                baseTrackCursor);
         try {
             db.beginTransaction();
             if (cursor.moveToFirst()) {
                 do {
                     long trackId = cursor.getId();
-                    new PlaylistToTrackContentValues()
+                    ContentValues values = new PlaylistToTrackContentValues()
                             .putPlaylistId(playlistId)
-                            .putTrackId(trackId)
-                            .insert(context.getContentResolver());
+                            .putTrackId(trackId).values();
+                    db.insert(PlaylistToTrackColumns.TABLE_NAME, null, values);
                 } while (cursor.moveToNext());
             }
             db.setTransactionSuccessful();
@@ -88,7 +107,8 @@ public class DatabaseHelperCallbacks {
     }
 
     public void onUpgrade(final Context context, final SQLiteDatabase db, final int oldVersion, final int newVersion) {
-        if (BuildConfig.DEBUG) Log.d(TAG, "Upgrading database from version " + oldVersion + " to " + newVersion);
+        if (BuildConfig.DEBUG)
+            Log.d(TAG, "Upgrading database from version " + oldVersion + " to " + newVersion);
         // Insert your upgrading code here.
     }
 }
