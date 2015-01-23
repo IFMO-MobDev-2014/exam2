@@ -1,24 +1,27 @@
 package ru.ifmo.md.exam1;
 
+import android.content.ContentValues;
 import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.EditText;
 
 
-public class MainActivity extends ActionBarActivity {
+public class NewListActivity extends ActionBarActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
+        setContentView(R.layout.activity_new_list);
     }
 
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.menu_main, menu);
+        getMenuInflater().inflate(R.menu.menu_new_list, menu);
         return true;
     }
 
@@ -35,5 +38,20 @@ public class MainActivity extends ActionBarActivity {
         }
 
         return super.onOptionsItemSelected(item);
+    }
+
+    public void addBtn(View view) {
+        EditText txt = (EditText)findViewById(R.id.editArtist);
+        String artist = txt.getText().toString();
+        txt = (EditText)findViewById(R.id.editYear);
+        Integer year = Integer.parseInt(txt.getText().toString());
+        txt = (EditText) findViewById(R.id.editName);
+        String listName = txt.getText().toString();
+
+        ContentValues cv = new ContentValues();
+        cv.put(DBHelper.TRACK_KEY_NAME, listName);
+        cv.put(DBHelper.KEY_RAW_TYPE, 2);
+        
+
     }
 }
