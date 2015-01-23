@@ -1,4 +1,4 @@
-package ru.ifmo.md.exam1;
+package ru.ya.exam2;
 
 import android.app.Application;
 import android.test.ApplicationTestCase;
