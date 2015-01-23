@@ -11,18 +11,25 @@ import android.os.Build;
 import android.util.Log;
 
 import ru.ifmo.md.exam1.BuildConfig;
+import ru.ifmo.md.exam1.provider.playlists.PlaylistsColumns;
 import ru.ifmo.md.exam1.provider.song.SongColumns;
 
 public class MySQLiteOpenHelper extends SQLiteOpenHelper {
     private static final String TAG = MySQLiteOpenHelper.class.getSimpleName();
 
     public static final String DATABASE_FILE_NAME = "data.db";
-    private static final int DATABASE_VERSION = 21;
+    private static final int DATABASE_VERSION = 22;
     private static MySQLiteOpenHelper sInstance;
     private final Context mContext;
     private final MySQLiteOpenHelperCallbacks mOpenHelperCallbacks;
 
     // @formatter:off
+    public static final String SQL_CREATE_TABLE_PLAYLISTS = "CREATE TABLE IF NOT EXISTS "
+            + PlaylistsColumns.TABLE_NAME + " ( "
+            + PlaylistsColumns._ID + " INTEGER PRIMARY KEY AUTOINCREMENT, "
+            + PlaylistsColumns.NAME + " TEXT "
+            + " );";
+
     public static final String SQL_CREATE_TABLE_SONG = "CREATE TABLE IF NOT EXISTS "
             + SongColumns.TABLE_NAME + " ( "
             + SongColumns._ID + " INTEGER PRIMARY KEY AUTOINCREMENT, "
@@ -91,6 +98,7 @@ public class MySQLiteOpenHelper extends SQLiteOpenHelper {
     public void onCreate(SQLiteDatabase db) {
         if (BuildConfig.DEBUG) Log.d(TAG, "onCreate");
         mOpenHelperCallbacks.onPreCreate(mContext, db);
+        db.execSQL(SQL_CREATE_TABLE_PLAYLISTS);
         db.execSQL(SQL_CREATE_TABLE_SONG);
         mOpenHelperCallbacks.onPostCreate(mContext, db);
     }

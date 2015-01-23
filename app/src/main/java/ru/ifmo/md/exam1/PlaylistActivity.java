@@ -2,7 +2,6 @@ package ru.ifmo.md.exam1;
 
 import android.app.LoaderManager;
 import android.content.CursorLoader;
-import android.content.Intent;
 import android.content.Loader;
 import android.database.Cursor;
 import android.support.v7.app.ActionBarActivity;
@@ -10,36 +9,26 @@ import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
 
-import ru.ifmo.md.exam1.provider.Playlist;
-import ru.ifmo.md.exam1.provider.playlists.PlaylistsColumns;
-import ru.ifmo.md.exam1.provider.playlists.PlaylistsCursor;
+import java.util.Random;
+
 import ru.ifmo.md.exam1.provider.song.SongColumns;
 import ru.ifmo.md.exam1.provider.song.SongCursor;
 
 
-public class MainActivity extends ActionBarActivity implements LoaderManager.LoaderCallbacks<Cursor>{
+public class PlaylistActivity extends ActionBarActivity implements LoaderManager.LoaderCallbacks<Cursor> {
     ArrayAdapter<String> adapter;
+    Random rng = new Random(58);
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
+        setContentView(R.layout.activity_playlist);
         adapter = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1);
         getLoaderManager().restartLoader(0, null, this);
-        ListView listView = (ListView)findViewById(R.id.listView2);
-        listView.setAdapter(adapter);
-        listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
-                Intent intent = new Intent(MainActivity.this, PlaylistActivity.class);
-                intent.putExtra("playlist", adapter.getItem(i));
-                startActivity(intent);
-            }
-        });
+        ((ListView)findViewById(R.id.listView)).setAdapter(adapter);
     }
 
 
@@ -67,7 +56,7 @@ public class MainActivity extends ActionBarActivity implements LoaderManager.Loa
 
     @Override
     public Loader<Cursor> onCreateLoader(int i, Bundle bundle) {
-        return new CursorLoader(this, PlaylistsColumns.CONTENT_URI, null, null, null, null);
+        return new CursorLoader(this, SongColumns.CONTENT_URI, null, null, null, null);
     }
 
     @Override
@@ -77,8 +66,8 @@ public class MainActivity extends ActionBarActivity implements LoaderManager.Loa
         }
         adapter.clear();
         while (cursor.moveToNext()) {
-            PlaylistsCursor itemCursor = new PlaylistsCursor(cursor);
-            adapter.add(itemCursor.getName());
+            SongCursor itemCursor = new SongCursor(cursor);
+            adapter.add(itemCursor.getSong());
         }
         adapter.notifyDataSetChanged();
     }

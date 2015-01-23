@@ -17,6 +17,9 @@ import java.util.Iterator;
 import java.util.Scanner;
 import java.util.TreeSet;
 
+import ru.ifmo.md.exam1.provider.Playlist;
+import ru.ifmo.md.exam1.provider.playlists.PlaylistsColumns;
+import ru.ifmo.md.exam1.provider.playlists.PlaylistsContentValues;
 import ru.ifmo.md.exam1.provider.song.SongColumns;
 
 /**
@@ -47,6 +50,10 @@ public class Parser {
             } finally {
                 db.endTransaction();
             }
+
+            PlaylistsContentValues contentValues = new PlaylistsContentValues();
+            contentValues.putName("all songs");
+            db.insert(PlaylistsColumns.TABLE_NAME, null, contentValues.values());
 
             Log.i("", "parsed ok");
         } catch (IOException | JSONException e) {

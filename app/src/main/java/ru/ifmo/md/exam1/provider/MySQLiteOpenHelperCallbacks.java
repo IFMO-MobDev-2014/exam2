@@ -36,6 +36,7 @@ public class MySQLiteOpenHelperCallbacks {
         if (BuildConfig.DEBUG) Log.d(TAG, "Upgrading database from version " + oldVersion + " to " + newVersion);
         db.execSQL("DROP TABLE IF EXISTS " + SongColumns.TABLE_NAME);
         db.execSQL(MySQLiteOpenHelper.SQL_CREATE_TABLE_SONG);
+        db.execSQL(MySQLiteOpenHelper.SQL_CREATE_TABLE_PLAYLISTS);
         Parser.parse(context, db);
         // Insert your upgrading code here.
     }

@@ -4,6 +4,7 @@ import android.net.Uri;
 import android.provider.BaseColumns;
 
 import ru.ifmo.md.exam1.provider.MyProvider;
+import ru.ifmo.md.exam1.provider.playlists.PlaylistsColumns;
 import ru.ifmo.md.exam1.provider.song.SongColumns;
 
 /**
