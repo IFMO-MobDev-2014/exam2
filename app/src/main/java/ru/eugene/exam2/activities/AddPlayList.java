@@ -107,7 +107,6 @@ public class AddPlayList extends ActionBarActivity implements LoaderManager.Load
         array = set.toArray(array);
         Arrays.sort(array);
 
-        Log.e("LOG", "size: " + setGen.size());
         String[] arrayGen = new String[setGen.size()];
         arrayGen = setGen.toArray(arrayGen);
         Arrays.sort(arrayGen);
@@ -115,7 +114,6 @@ public class AddPlayList extends ActionBarActivity implements LoaderManager.Load
         for (String i : arrayGen) {
             this.arrayGen.add(i);
         }
-        Log.e("LOG", "size: " + this.arrayGen.size());
         adapter.notifyDataSetChanged();
 
         ArrayAdapter<Integer> adapter = new ArrayAdapter<Integer>(this,

@@ -12,7 +12,7 @@ import ru.eugene.exam2.items.SongsSource;
  */
 public class MyOpenHelper extends SQLiteOpenHelper {
     public static final String NAME = "items.db";
-    public static final int VERSION = 16;
+    public static final int VERSION = 17;
 
     public MyOpenHelper(Context context) {
         super(context, NAME, null, VERSION);

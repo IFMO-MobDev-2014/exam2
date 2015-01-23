@@ -90,6 +90,7 @@ public class ParseSongs extends IntentService {
                 JSONArray genres = curObject.getJSONArray("genres");
                 for (int j = -1; j < genres.length(); j++) {
                     Song curSong = new Song();
+                    curSong.setGenres("");
                     if (j != -1) {
                         curSong.setGenres(genres.getString(j));
                     }
@@ -100,7 +101,6 @@ public class ParseSongs extends IntentService {
                     curSong.setDuration(duration);
                     curSong.setPopularity(popularity);
                     curSong.setYear(year);
-                    curSong.setGenres("");
                     songItems.add(curSong);
                 }
             }
