@@ -27,7 +27,7 @@ public class SongDatabaseHelper extends SQLiteOpenHelper {
                 SongContract.Song.ID + " TEXT NOT NULL, " +
                 SongContract.Song.NAME + " TEXT NOT NULL, " +
                 SongContract.Song.URL + " TEXT, " +
-                SongContract.Song.DURATION + " INTEGER, " +
+                SongContract.Song.DURATION + " TEXT, " +
                 SongContract.Song.POPULARITY + " INTEGER, " +
                 SongContract.Song.YEAR + " INTEGER, " +
                 SongContract.Song.GENRES + " TEXT NOT NULL, " +
