@@ -1,12 +1,14 @@
 package ru.ifmo.md.exam1;
 
 import android.app.LoaderManager;
+import android.content.ContentValues;
 import android.content.CursorLoader;
 import android.content.Intent;
 import android.content.Loader;
 import android.database.Cursor;
 import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -14,26 +16,36 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
 
-import ru.ifmo.md.exam1.provider.playlists.PlaylistsColumns;
-import ru.ifmo.md.exam1.provider.playlists.PlaylistsCursor;
+import java.util.Random;
+
+import ru.ifmo.md.exam1.provider.song.SongColumns;
+import ru.ifmo.md.exam1.provider.song.SongCursor;
 
 
-public class MainActivity extends ActionBarActivity implements LoaderManager.LoaderCallbacks<Cursor>{
-    ArrayAdapter<Playlist> adapter;
+public class PlaylistActivity extends ActionBarActivity implements LoaderManager.LoaderCallbacks<Cursor> {
+    ArrayAdapter<Song> adapter;
+    Random rng = new Random(58);
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
-        adapter = new ArrayAdapter<Playlist>(this, android.R.layout.simple_list_item_1);
+        setContentView(R.layout.activity_playlist);
+        adapter = new ArrayAdapter<Song>(this, android.R.layout.simple_list_item_1);
         getLoaderManager().restartLoader(0, null, this);
-        ListView listView = (ListView)findViewById(R.id.listView2);
+        ListView listView = (ListView)findViewById(R.id.listView);
         listView.setAdapter(adapter);
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
-                Intent intent = new Intent(MainActivity.this, PlaylistActivity.class);
-                intent.putExtra("playlist", adapter.getItem(i).name);
+                Intent intent = new Intent(PlaylistActivity.this, SongActivity.class);
+
+                // sorry, I have no time to write good code
+                Song song = adapter.getItem(i);
+                intent.putExtra("song", song.song);
+                intent.putExtra("artist", song.artist);
+                intent.putExtra("year", Integer.toString(song.year));
+                intent.putExtra("duration", song.duration);
+                intent.putExtra("genres_mask", song.genres_mask);
                 startActivity(intent);
             }
         });
@@ -55,9 +67,8 @@ public class MainActivity extends ActionBarActivity implements LoaderManager.Loa
         int id = item.getItemId();
 
         //noinspection SimplifiableIfStatement
-        if (id == R.id.action_add) {
-            Intent intent = new Intent(this, AddPlaylistActivity.class);
-            startActivity(intent);
+        if (id == R.id.action_settings) {
+            return true;
         }
 
         return super.onOptionsItemSelected(item);
@@ -65,18 +76,18 @@ public class MainActivity extends ActionBarActivity implements LoaderManager.Loa
 
     @Override
     public Loader<Cursor> onCreateLoader(int i, Bundle bundle) {
-        return new CursorLoader(this, PlaylistsColumns.CONTENT_URI, null, null, null, null);
+        return new CursorLoader(this, SongColumns.CONTENT_URI, null, null, null, null);
     }
 
     @Override
     public void onLoadFinished(Loader<Cursor> cursorLoader, Cursor cursor) {
         if (adapter == null) {
-            adapter = new ArrayAdapter<Playlist>(this, android.R.layout.simple_list_item_1);
+            adapter = new ArrayAdapter<Song>(this, android.R.layout.simple_list_item_1);
         }
         adapter.clear();
         while (cursor.moveToNext()) {
-            PlaylistsCursor itemCursor = new PlaylistsCursor(cursor);
-            adapter.add(new Playlist(itemCursor));
+            SongCursor itemCursor = new SongCursor(cursor);
+            adapter.add(new Song(itemCursor));
         }
         adapter.notifyDataSetChanged();
     }
