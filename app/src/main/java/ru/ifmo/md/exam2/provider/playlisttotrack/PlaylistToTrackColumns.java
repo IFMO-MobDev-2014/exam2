@@ -48,4 +48,5 @@ public class PlaylistToTrackColumns implements BaseColumns {
     }
 
     public static final String PREFIX_PLAYLIST = TABLE_NAME + "__" + PlaylistColumns.TABLE_NAME;
+    public static final String PREFIX_TRACK = TABLE_NAME + "__" + TrackColumns.TABLE_NAME;
 }

@@ -34,6 +34,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
             + PlaylistToTrackColumns.PLAYLIST_ID + " INTEGER NOT NULL, "
             + PlaylistToTrackColumns.TRACK_ID + " INTEGER NOT NULL "
             + ", CONSTRAINT fk_playlist_id FOREIGN KEY (" + PlaylistToTrackColumns.PLAYLIST_ID + ") REFERENCES playlist (_id) ON DELETE CASCADE"
+            + ", CONSTRAINT fk_track_id FOREIGN KEY (" + PlaylistToTrackColumns.TRACK_ID + ") REFERENCES track (_id) ON DELETE CASCADE"
             + " );";
 
     private static final String SQL_CREATE_TABLE_PLAYLIST = "CREATE TABLE IF NOT EXISTS "

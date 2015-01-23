@@ -11,6 +11,7 @@ import android.net.Uri;
 
 import ru.ifmo.md.exam2.provider.base.AbstractSelection;
 import ru.ifmo.md.exam2.provider.playlist.*;
+import ru.ifmo.md.exam2.provider.track.*;
 
 /**
  * Selection for the {@code playlist_to_track} table.
@@ -129,6 +130,96 @@ public class PlaylistToTrackSelection extends AbstractSelection<PlaylistToTrackS
 
     public PlaylistToTrackSelection trackIdLtEq(long value) {
         addLessThanOrEquals(PlaylistToTrackColumns.TRACK_ID, value);
+        return this;
+    }
+
+    public PlaylistToTrackSelection trackTitle(String... value) {
+        addEquals(TrackColumns.TITLE, value);
+        return this;
+    }
+
+    public PlaylistToTrackSelection trackTitleNot(String... value) {
+        addNotEquals(TrackColumns.TITLE, value);
+        return this;
+    }
+
+    public PlaylistToTrackSelection trackTitleLike(String... value) {
+        addLike(TrackColumns.TITLE, value);
+        return this;
+    }
+
+    public PlaylistToTrackSelection trackAuthor(String... value) {
+        addEquals(TrackColumns.AUTHOR, value);
+        return this;
+    }
+
+    public PlaylistToTrackSelection trackAuthorNot(String... value) {
+        addNotEquals(TrackColumns.AUTHOR, value);
+        return this;
+    }
+
+    public PlaylistToTrackSelection trackAuthorLike(String... value) {
+        addLike(TrackColumns.AUTHOR, value);
+        return this;
+    }
+
+    public PlaylistToTrackSelection trackYear(int... value) {
+        addEquals(TrackColumns.YEAR, toObjectArray(value));
+        return this;
+    }
+
+    public PlaylistToTrackSelection trackYearNot(int... value) {
+        addNotEquals(TrackColumns.YEAR, toObjectArray(value));
+        return this;
+    }
+
+    public PlaylistToTrackSelection trackYearGt(int value) {
+        addGreaterThan(TrackColumns.YEAR, value);
+        return this;
+    }
+
+    public PlaylistToTrackSelection trackYearGtEq(int value) {
+        addGreaterThanOrEquals(TrackColumns.YEAR, value);
+        return this;
+    }
+
+    public PlaylistToTrackSelection trackYearLt(int value) {
+        addLessThan(TrackColumns.YEAR, value);
+        return this;
+    }
+
+    public PlaylistToTrackSelection trackYearLtEq(int value) {
+        addLessThanOrEquals(TrackColumns.YEAR, value);
+        return this;
+    }
+
+    public PlaylistToTrackSelection trackGenresMask(long... value) {
+        addEquals(TrackColumns.GENRES_MASK, toObjectArray(value));
+        return this;
+    }
+
+    public PlaylistToTrackSelection trackGenresMaskNot(long... value) {
+        addNotEquals(TrackColumns.GENRES_MASK, toObjectArray(value));
+        return this;
+    }
+
+    public PlaylistToTrackSelection trackGenresMaskGt(long value) {
+        addGreaterThan(TrackColumns.GENRES_MASK, value);
+        return this;
+    }
+
+    public PlaylistToTrackSelection trackGenresMaskGtEq(long value) {
+        addGreaterThanOrEquals(TrackColumns.GENRES_MASK, value);
+        return this;
+    }
+
+    public PlaylistToTrackSelection trackGenresMaskLt(long value) {
+        addLessThan(TrackColumns.GENRES_MASK, value);
+        return this;
+    }
+
+    public PlaylistToTrackSelection trackGenresMaskLtEq(long value) {
+        addLessThanOrEquals(TrackColumns.GENRES_MASK, value);
         return this;
     }
 }

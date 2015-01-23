@@ -248,6 +248,9 @@ public class MyContentProvider extends ContentProvider {
                 if (PlaylistColumns.hasColumns(projection)) {
                     res.tablesWithJoins += " LEFT OUTER JOIN " + PlaylistColumns.TABLE_NAME + " AS " + PlaylistToTrackColumns.PREFIX_PLAYLIST + " ON " + PlaylistToTrackColumns.TABLE_NAME + "." + PlaylistToTrackColumns.PLAYLIST_ID + "=" + PlaylistToTrackColumns.PREFIX_PLAYLIST + "." + PlaylistColumns._ID;
                 }
+                if (TrackColumns.hasColumns(projection)) {
+                    res.tablesWithJoins += " LEFT OUTER JOIN " + TrackColumns.TABLE_NAME + " AS " + PlaylistToTrackColumns.PREFIX_TRACK + " ON " + PlaylistToTrackColumns.TABLE_NAME + "." + PlaylistToTrackColumns.TRACK_ID + "=" + PlaylistToTrackColumns.PREFIX_TRACK + "." + TrackColumns._ID;
+                }
                 res.orderBy = PlaylistToTrackColumns.DEFAULT_ORDER;
                 break;
 

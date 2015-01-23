@@ -17,10 +17,15 @@
             </intent-filter>
         </activity>
 
-         <provider
-            android:name="ru.ifmo.md.exam2.provider.MyContentProvider"
+        <provider
+            android:name=".provider.MyContentProvider"
             android:authorities="ru.ifmo.md.exam2.provider"
             android:exported="false" />
+
+        <activity
+            android:name=".PlaylistViewActivity"
+            android:label="@string/title_activity_playlist_view" >
+        </activity>
     </application>
 
 </manifest>

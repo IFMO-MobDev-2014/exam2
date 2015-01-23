@@ -13,9 +13,9 @@
 	    "name": "track_id",
 	    "type": "Long",
 	    "nullable": false,
-	    "foreignkey": {
-		"table": "track",
-		"onDelete": "CASCADE"
+	    "foreignKey": {
+		    "table": "track",
+		    "onDelete": "CASCADE"
 	    }
 	}
     ]
