@@ -9,12 +9,6 @@
         yourapp:showAsAction="always" />
 
     <item
-        android:id="@+id/action_sort"
-        android:icon="@drawable/ic_action_sort_by_size"
-        android:title="sort"
-        yourapp:showAsAction="always" />
-
-    <item
         android:id="@+id/action_delete"
         android:icon="@drawable/ic_action_delete"
         android:title="delete all data"

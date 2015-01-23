@@ -7,31 +7,32 @@ import android.content.UriMatcher;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.net.Uri;
+import android.util.Log;
 
-import ru.eugene.exam2.items.Item1Source;
-import ru.eugene.exam2.items.Item2Source;
+import ru.eugene.exam2.items.PlayListsSource;
+import ru.eugene.exam2.items.SongsSource;
 
 /**
  * Created by eugene on 1/21/15.
  */
-public class ItemsProvider extends ContentProvider {
+public class SongsProvider extends ContentProvider {
     private static final String AUTHORITY = "ru.eugene.exam2.db";
-    private static final String PATH_ITEM1 = "item1";
-    private static final String PATH_ITEM2 = "item2";
+    private static final String PATH_SONG = "song";
+    private static final String PATH_PLAY_LIST = "play_list";
 
-    public static final Uri CONTENT_URI_ITEM1 = Uri.parse("content://" + AUTHORITY
-            + "/" + PATH_ITEM1);
+    public static final Uri CONTENT_URI_SONG = Uri.parse("content://" + AUTHORITY
+            + "/" + PATH_SONG);
 
-    public static final Uri CONTENT_URI_ITEM2 = Uri.parse("content://" + AUTHORITY
-            + "/" + PATH_ITEM2);
+    public static final Uri CONTENT_URI_PLAY_LIST = Uri.parse("content://" + AUTHORITY
+            + "/" + PATH_PLAY_LIST);
 
-    private static final int ITEM1 = 10;
-    private static final int ITEM2 = 30;
+    private static final int SONG = 10;
+    private static final int PLAY_LIST = 30;
     private static final UriMatcher sURIMatcher = new UriMatcher(UriMatcher.NO_MATCH);
 
     static {
-        sURIMatcher.addURI(AUTHORITY, PATH_ITEM1, ITEM1);
-        sURIMatcher.addURI(AUTHORITY, PATH_ITEM2, ITEM2);
+        sURIMatcher.addURI(AUTHORITY, PATH_SONG, SONG);
+        sURIMatcher.addURI(AUTHORITY, PATH_PLAY_LIST, PLAY_LIST);
     }
 
     private MyOpenHelper dbHelper;
@@ -55,10 +56,11 @@ public class ItemsProvider extends ContentProvider {
     private String getTableName(Uri uri) {
         int match = sURIMatcher.match(uri);
         switch (match) {
-            case ITEM1:
-                return Item1Source.TABLE_NAME;
-            case ITEM2:
-                return Item2Source.TABLE_NAME;
+            case SONG:
+                return SongsSource.TABLE_NAME;
+            case PLAY_LIST:
+                Log.e("LOG", "getTable: PlayList");
+                return PlayListsSource.TABLE_NAME;
             default:
                 throw new IllegalArgumentException("Unknown uri: " + uri);
         }
@@ -71,6 +73,7 @@ public class ItemsProvider extends ContentProvider {
 
     @Override
     public Uri insert(Uri uri, ContentValues values) {
+        Log.e("LOG", "insert: " + getTableName(uri));
         SQLiteDatabase db = dbHelper.getWritableDatabase();
 
         long id = db.insert(getTableName(uri), null, values);
@@ -80,6 +83,27 @@ public class ItemsProvider extends ContentProvider {
         }
 
         return uri;
+    }
+
+    @Override
+    public int bulkInsert(Uri uri, ContentValues[] values) {
+        SQLiteDatabase db = dbHelper.getWritableDatabase();
+        db.beginTransaction();
+
+        int ans = 0;
+        for (ContentValues value : values) {
+            long id = db.insert(getTableName(uri), null, value);
+            if (id > 0) {
+                ans++;
+            }
+        }
+
+        if (ans > 0) {
+            getContext().getContentResolver().notifyChange(uri, null);
+        }
+        db.setTransactionSuccessful();
+        db.endTransaction();
+        return ans;
     }
 
     @Override

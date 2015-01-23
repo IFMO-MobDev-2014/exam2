@@ -3,10 +3,12 @@ package ru.eugene.exam2.activities;
 import android.app.AlertDialog;
 import android.app.Dialog;
 import android.app.LoaderManager;
+import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.CursorLoader;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.content.Loader;
 import android.database.Cursor;
 import android.support.v7.app.ActionBarActivity;
@@ -18,7 +20,6 @@ import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.Window;
 import android.widget.AdapterView;
 import android.widget.EditText;
 import android.widget.ListView;
@@ -31,9 +32,11 @@ import java.util.Date;
 
 import ru.eugene.exam2.R;
 import ru.eugene.exam2.db.AsyncInsert;
-import ru.eugene.exam2.items.Item1;
-import ru.eugene.exam2.items.Item1Source;
-import ru.eugene.exam2.db.ItemsProvider;
+import ru.eugene.exam2.db.ParseSongs;
+import ru.eugene.exam2.db.SongsProvider;
+import ru.eugene.exam2.items.PlayListsSource;
+import ru.eugene.exam2.items.Song;
+import ru.eugene.exam2.items.SongsSource;
 
 
 public class MainActivity extends ActionBarActivity implements LoaderManager.LoaderCallbacks<Cursor> {
@@ -44,7 +47,17 @@ public class MainActivity extends ActionBarActivity implements LoaderManager.Loa
     private ListView list;
     private Toast toast;
     private int posOfSelectedEl;
-    private String sortBy = Item1Source.COLUMN_DATE;
+    private String sortBy = SongsSource.COLUMN_YEAR;
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -52,10 +65,8 @@ public class MainActivity extends ActionBarActivity implements LoaderManager.Loa
         setContentView(R.layout.activity_main);
 
         getSupportActionBar().setTitle("My app");
-//        getActionBar().setDisplayShowTitleEnabled(false);
 
-
-        String[] from = new String[]{Item1Source.COLUMN_NAME, Item1Source.COLUMN_DATE};
+        String[] from = new String[]{PlayListsSource.COLUMN_NAME, PlayListsSource.COLUMN_DATE};
         final int[] to = new int[]{R.id.name, R.id.date};
         adapter = new SimpleCursorAdapter(this, R.layout.main_list_item, null, from, to, 0);
         context = this;
@@ -66,10 +77,8 @@ public class MainActivity extends ActionBarActivity implements LoaderManager.Loa
         list.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                if (toast != null) toast.cancel();
-                toast = Toast.makeText(context, "position: " + position, Toast.LENGTH_SHORT);
-                toast.setGravity(Gravity.CENTER, 0, 0);
-                toast.show();
+                Intent intent = new Intent(context, ViewPlayList.class);
+                startActivity(intent);
             }
         });
 
@@ -82,12 +91,6 @@ public class MainActivity extends ActionBarActivity implements LoaderManager.Loa
                 return true;
             }
         });
-
-        Log.e("LOG", "onCreate: " + sortBy);
-        if (savedInstanceState != null) {
-            sortBy = savedInstanceState.getString("sortBy", Item1Source.COLUMN_DATE);
-        }
-
 
         getLoaderManager().initLoader(0, null, this);
     }
@@ -104,71 +107,28 @@ public class MainActivity extends ActionBarActivity implements LoaderManager.Loa
 
         switch (id) {
             case R.id.action_new:
-                onCreateDialog(null).show();
+                Intent intent = new Intent(this, AddPlayList.class);
+                startActivity(intent);
                 break;
             case R.id.action_delete:
-                getContentResolver().delete(ItemsProvider.CONTENT_URI_ITEM1,
-                        Item1Source.COLUMN_ID + ">?", new String[]{"0"});
-                break;
-            case R.id.action_sort:
-                if (sortBy.equals(Item1Source.COLUMN_DATE)) {
-                    sortBy = Item1Source.COLUMN_NAME;
-                } else {
-                    sortBy = Item1Source.COLUMN_DATE;
-                }
-                getLoaderManager().restartLoader(0, null, this);
+                getContentResolver().delete(SongsProvider.CONTENT_URI_PLAY_LIST,
+                        PlayListsSource.COLUMN_ID + ">?", new String[]{"0"});
+                getContentResolver().delete(SongsProvider.CONTENT_URI_SONG,
+                        SongsSource.COLUMN_ID + ">?", new String[]{"0"});
                 break;
         }
 
         return super.onOptionsItemSelected(item);
     }
 
-    private String getCurDate() {
-        Long curMillis = System.currentTimeMillis();
-        Date curDate = new Date(curMillis);
-        SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-
-        Calendar cal = Calendar.getInstance();
-        formatter.setTimeZone(cal.getTimeZone());
-
-        return formatter.format(curDate);
-    }
-
-    public Dialog onCreateDialog(final Integer position) {
-        AlertDialog.Builder builder = new AlertDialog.Builder(this);
-        LayoutInflater inflater = getLayoutInflater();
-        View inflatedView = inflater.inflate(R.layout.dialog_insert, null);
-        final EditText name = (EditText) inflatedView.findViewById(R.id.name);
-        builder.setView(inflatedView)
-                .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int id) {
-                        Item1 item1 = new Item1();
-                        item1.setName(name.getText().toString());
-                        item1.setDate(getCurDate());
-                        if (position == null) {
-                            new AsyncInsert(context, ItemsProvider.CONTENT_URI_ITEM1)
-                                    .execute(item1.generateContentValues());
-                        } else {
-//                            context.getContentResolver().update(ItemsProvider.CONTENT_URI_ITEM1, item1.generateContentValues(),
-//                                    Item1Source.COLUMN_ID + "=?", new String[]{Integer.toString(posToId.get(position))});
-                        }
-                    }
-                })
-                .setNegativeButton(android.R.string.cancel, new DialogInterface.OnClickListener() {
-                    public void onClick(DialogInterface dialog, int id) {
-                    }
-                });
-        return builder.create();
-    }
-
     @Override
     public Loader<Cursor> onCreateLoader(int id, Bundle args) {
-        return new CursorLoader(this, ItemsProvider.CONTENT_URI_ITEM1, null, null, null, sortBy);
+        return new CursorLoader(this, SongsProvider.CONTENT_URI_PLAY_LIST, null, null, null, null);
     }
 
     @Override
     public void onLoadFinished(Loader<Cursor> loader, Cursor data) {
+        Log.e("LOG", "load finish");
         if (data == null || data.getCount() == 0) {
             initDatabase();
         }
@@ -176,10 +136,9 @@ public class MainActivity extends ActionBarActivity implements LoaderManager.Loa
     }
 
     private void initDatabase() {
-        Item1 item1 = new Item1();
-        item1.setName("default value");
-        new AsyncInsert(context, ItemsProvider.CONTENT_URI_ITEM1)
-                .execute(item1.generateContentValues());
+        Log.e("LOG", "init");
+        Intent intent = new Intent(this, ParseSongs.class);
+        startService(intent);
     }
 
     @Override
@@ -212,8 +171,8 @@ public class MainActivity extends ActionBarActivity implements LoaderManager.Loa
                         public void onClick(DialogInterface dialog, int which) {
                             Cursor temp = adapter.getCursor();
                             temp.moveToPosition(posOfSelectedEl);
-                            int id = temp.getInt(temp.getColumnIndex(Item1Source.COLUMN_ID));
-                            context.getContentResolver().delete(ItemsProvider.CONTENT_URI_ITEM1, Item1Source.COLUMN_ID + "=?",
+                            int id = temp.getInt(temp.getColumnIndex(SongsSource.COLUMN_ID));
+                            context.getContentResolver().delete(SongsProvider.CONTENT_URI_SONG, SongsSource.COLUMN_ID + "=?",
                                     new String[]{String.valueOf(id)});
                         }
                     })
