@@ -4,20 +4,20 @@ package ru.ifmo.md.exam1;
  * Created by timur on 23.01.15.
  */
 public class Playlist {
-    private int[] songsId;
+    private String[] authors;
     private String name;
     private String[] janres;
     private int[] years;
 
-    public Playlist(int[] songsId, String name, String[] janres, int[] years) {
-        this.songsId = songsId;
+    public Playlist(String[] authors, String name, String[] janres, int[] years) {
+        this.authors = authors;
         this.name = name;
         this.janres = janres;
         this.years = years;
     }
 
-    public int[] getSongsId() {
-        return songsId;
+    public String[] getAuthors() {
+        return authors;
     }
 
     public int[] getYears() {
@@ -32,8 +32,8 @@ public class Playlist {
         return name;
     }
 
-    public void setSongsId(int[] songsId) {
-       this.songsId = songsId;
+    public void setSongsId(String[] authors) {
+        this.authors = authors;
     }
 
     public void setName(String name) {

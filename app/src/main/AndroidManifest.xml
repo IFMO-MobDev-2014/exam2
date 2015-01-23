@@ -24,6 +24,11 @@
             android:name=".SongsActivity"
             android:label="@string/title_activity_songs" >
         </activity>
+
+        <service
+            android:name=".InitializerService"
+            android:exported="false" >
+        </service>
     </application>
 
 </manifest>

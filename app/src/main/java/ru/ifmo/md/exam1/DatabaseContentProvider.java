@@ -9,18 +9,21 @@ import android.database.sqlite.SQLiteQueryBuilder;
 import android.net.Uri;
 
 public class DatabaseContentProvider extends ContentProvider {
-    public static final String AUTHORITY = "ru.ifmo.md.lesson8.weather";
-    public static final String BASE_URI = "cities";
-    public static final Uri URI_CITY_DIR = Uri.parse("content://" + AUTHORITY + "/" + BASE_URI);
-    public static final int URI_TYPE_CITY_DIR = 1;
-    public static final int URI_TYPE_WEATHER_DIR = 2;
-    private static final String BAD_URI = "Invalid Uri";
-    private static final String UNSUPPORTED_OPERATION = "Unsupported operation";
+    private static final int PLAYLISTS_DIR = 1;
+    private static final int SONGS_DIR = 2;
+
+    private static final String AUTHORITY = "com.example.timur.rssreader";
+    private static final String BASE_URI = "feeds";
+    public static final Uri URI_FEED_DIR = Uri.parse("content://" + AUTHORITY + "/" + BASE_URI);
+
+    private static final String UNSUPPORTED_OPERATION = "Unsupported operation type";
+    private static final String ILLEGAL_ARGUMENT = "Invalid URI argument: ";
+
     private static UriMatcher uriMatcher = new UriMatcher(UriMatcher.NO_MATCH);
 
     static {
-        uriMatcher.addURI(AUTHORITY, BASE_URI, URI_TYPE_CITY_DIR);
-        uriMatcher.addURI(AUTHORITY, BASE_URI + "/#", URI_TYPE_WEATHER_DIR);
+        uriMatcher.addURI(AUTHORITY, BASE_URI, PLAYLISTS_DIR);
+        uriMatcher.addURI(AUTHORITY, BASE_URI + "/#", SONGS_DIR);
     }
 
     private DatabaseHelper databaseHelper;
@@ -28,18 +31,14 @@ public class DatabaseContentProvider extends ContentProvider {
     @Override
     public int delete(Uri uri, String selection, String[] selectionArgs) {
         int uriType = uriMatcher.match(uri);
-        String dTable;
-        if (uriType == URI_TYPE_CITY_DIR) {
-            dTable = PlaylistsTable.CITIES_TABLE;
-        } else if (uriType == URI_TYPE_WEATHER_DIR) {
-            dTable = SongsTable.WEATHER_TABLE;
-            selection = SongsTable.CITY_ID + " = ?";
-            selectionArgs = new String[]{uri.getLastPathSegment()};
-        } else {
-            throw new IllegalArgumentException(BAD_URI);
+        if (uriType == UriMatcher.NO_MATCH) {
+            throw new IllegalArgumentException(ILLEGAL_ARGUMENT + uri.toString());
+        } else if (uriType != SONGS_DIR) {
+            throw new UnsupportedOperationException(UNSUPPORTED_OPERATION);
         }
+
         SQLiteDatabase sqLiteDatabase = databaseHelper.getWritableDatabase();
-        return sqLiteDatabase.delete(dTable, selection, selectionArgs);
+        return sqLiteDatabase.delete(PlaylistsTable.TABLE_NAME, "rowid = ?", new String[]{uri.getLastPathSegment()});
     }
 
     @Override
@@ -50,19 +49,22 @@ public class DatabaseContentProvider extends ContentProvider {
     @Override
     public Uri insert(Uri uri, ContentValues values) {
         int uriType = uriMatcher.match(uri);
-        String tableName;
-        if (uriType == URI_TYPE_CITY_DIR) {
-            tableName = PlaylistsTable.CITIES_TABLE;
-        } else if (uriType == URI_TYPE_WEATHER_DIR) {
-            tableName = SongsTable.WEATHER_TABLE;
-            values.put(SongsTable.CITY_ID, uri.getLastPathSegment());
-        } else {
-            throw new IllegalArgumentException(BAD_URI);
+        if (uriType == UriMatcher.NO_MATCH) {
+            throw new IllegalArgumentException(ILLEGAL_ARGUMENT + uri.toString());
         }
-        SQLiteDatabase sqLiteDatabase = databaseHelper.getWritableDatabase();
-        long rowId = sqLiteDatabase.insert(tableName, null, values);
-        return uri.buildUpon().appendPath("" + rowId).build();
 
+        String tableName = null;
+        switch (uriType) {
+            case PLAYLISTS_DIR:
+                tableName = PlaylistsTable.TABLE_NAME;
+                break;
+            case SONGS_DIR:
+                tableName = SongsTable.TABLE_NAME;
+                break;
+        }
+
+        SQLiteDatabase sqLiteDatabase = databaseHelper.getWritableDatabase();
+        return uri.buildUpon().appendPath("" + sqLiteDatabase.insert(tableName, null, values)).build();
     }
 
     @Override
@@ -76,24 +78,27 @@ public class DatabaseContentProvider extends ContentProvider {
                         String[] selectionArgs, String sortOrder) {
 
         int uriType = uriMatcher.match(uri);
-        if (uriType == URI_TYPE_WEATHER_DIR) {
-            SQLiteQueryBuilder builder = new SQLiteQueryBuilder();
-            builder.setTables(SongsTable.WEATHER_TABLE);
-            builder.appendWhere(SongsTable.CITY_ID + "=" + uri.getLastPathSegment());
-            SQLiteDatabase sqLiteDatabase = databaseHelper.getWritableDatabase();
-            Cursor cursor = builder.query(sqLiteDatabase, projection, selection, selectionArgs, null, null, sortOrder);
-            cursor.setNotificationUri(getContext().getContentResolver(), uri);
-            return cursor;
-        } else if (uriType == URI_TYPE_CITY_DIR) {
-            SQLiteQueryBuilder builder = new SQLiteQueryBuilder();
-            builder.setTables(PlaylistsTable.CITIES_TABLE);
-            SQLiteDatabase sqLiteDatabase = databaseHelper.getWritableDatabase();
-            Cursor cursor = builder.query(sqLiteDatabase, projection, selection, selectionArgs, null, null, sortOrder);
-            cursor.setNotificationUri(getContext().getContentResolver(), uri);
-            return cursor;
-        } else {
-            throw new IllegalArgumentException(UNSUPPORTED_OPERATION);
+        if (uriType == UriMatcher.NO_MATCH) {
+            throw new IllegalArgumentException(ILLEGAL_ARGUMENT + uri.toString());
         }
+
+        SQLiteQueryBuilder builder = new SQLiteQueryBuilder();
+
+        if (uriType == PLAYLISTS_DIR) {
+            builder.setTables(PlaylistsTable.TABLE_NAME);
+        } else {
+            builder.setTables(SongsTable.TABLE_NAME);
+            if (uriType == SONGS_DIR) {
+                builder.appendWhere(SongsTable.SONG_ID + "=" + uri.getLastPathSegment());
+            }
+        }
+
+        SQLiteDatabase sqLiteDatabase = databaseHelper.getWritableDatabase();
+        Cursor cr = builder.query(sqLiteDatabase, projection, selection, selectionArgs, null, null, sortOrder);
+
+        cr.setNotificationUri(getContext().getContentResolver(), uri);
+
+        return cr;
     }
 
     @Override
@@ -101,12 +106,13 @@ public class DatabaseContentProvider extends ContentProvider {
                       String[] selectionArgs) {
         int uriType = uriMatcher.match(uri);
         if (uriType == UriMatcher.NO_MATCH) {
-            throw new IllegalArgumentException(BAD_URI);
-        } else if (uriType == URI_TYPE_WEATHER_DIR) {
-            SQLiteDatabase db = databaseHelper.getWritableDatabase();
-            return db.update(PlaylistsTable.CITIES_TABLE, values, PlaylistsTable.URL + " = ?", new String[]{uri.getLastPathSegment()});
-        } else {
+            throw new IllegalArgumentException(ILLEGAL_ARGUMENT + uri.toString());
+        } else if (uriType != SONGS_DIR) {
             throw new UnsupportedOperationException(UNSUPPORTED_OPERATION);
         }
+
+        SQLiteDatabase sqLiteDatabase = databaseHelper.getWritableDatabase();
+        return sqLiteDatabase.update(PlaylistsTable.TABLE_NAME, values, "rowid = ?", new String[]{uri.getLastPathSegment()});
     }
+
 }
