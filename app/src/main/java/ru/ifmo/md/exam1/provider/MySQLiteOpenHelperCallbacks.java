@@ -6,6 +6,8 @@ import android.database.sqlite.SQLiteDatabase;
 import android.util.Log;
 
 import ru.ifmo.md.exam1.BuildConfig;
+import ru.ifmo.md.exam1.Parser;
+import ru.ifmo.md.exam1.provider.song.SongColumns;
 
 /**
  * Implement your custom database creation or upgrade code here.
@@ -32,6 +34,9 @@ public class MySQLiteOpenHelperCallbacks {
 
     public void onUpgrade(final Context context, final SQLiteDatabase db, final int oldVersion, final int newVersion) {
         if (BuildConfig.DEBUG) Log.d(TAG, "Upgrading database from version " + oldVersion + " to " + newVersion);
+        db.execSQL("DROP TABLE IF EXISTS " + SongColumns.TABLE_NAME);
+        db.execSQL(MySQLiteOpenHelper.SQL_CREATE_TABLE_SONG);
+        Parser.parse(context, db);
         // Insert your upgrading code here.
     }
 }

@@ -18,7 +18,7 @@ import android.provider.BaseColumns;
 import android.util.Log;
 
 import ru.ifmo.md.exam1.BuildConfig;
-import ru.ifmo.md.exam1.provider.item.ItemColumns;
+import ru.ifmo.md.exam1.provider.song.SongColumns;
 
 public class MyProvider extends ContentProvider {
     private static final String TAG = MyProvider.class.getSimpleName();
@@ -34,16 +34,16 @@ public class MyProvider extends ContentProvider {
     public static final String QUERY_NOTIFY = "QUERY_NOTIFY";
     public static final String QUERY_GROUP_BY = "QUERY_GROUP_BY";
 
-    private static final int URI_TYPE_ITEM = 0;
-    private static final int URI_TYPE_ITEM_ID = 1;
+    private static final int URI_TYPE_SONG = 0;
+    private static final int URI_TYPE_SONG_ID = 1;
 
 
 
     private static final UriMatcher URI_MATCHER = new UriMatcher(UriMatcher.NO_MATCH);
 
     static {
-        URI_MATCHER.addURI(AUTHORITY, ItemColumns.TABLE_NAME, URI_TYPE_ITEM);
-        URI_MATCHER.addURI(AUTHORITY, ItemColumns.TABLE_NAME + "/#", URI_TYPE_ITEM_ID);
+        URI_MATCHER.addURI(AUTHORITY, SongColumns.TABLE_NAME, URI_TYPE_SONG);
+        URI_MATCHER.addURI(AUTHORITY, SongColumns.TABLE_NAME + "/#", URI_TYPE_SONG_ID);
     }
 
     protected MySQLiteOpenHelper mMySQLiteOpenHelper;
@@ -75,10 +75,10 @@ public class MyProvider extends ContentProvider {
     public String getType(Uri uri) {
         int match = URI_MATCHER.match(uri);
         switch (match) {
-            case URI_TYPE_ITEM:
-                return TYPE_CURSOR_DIR + ItemColumns.TABLE_NAME;
-            case URI_TYPE_ITEM_ID:
-                return TYPE_CURSOR_ITEM + ItemColumns.TABLE_NAME;
+            case URI_TYPE_SONG:
+                return TYPE_CURSOR_DIR + SongColumns.TABLE_NAME;
+            case URI_TYPE_SONG_ID:
+                return TYPE_CURSOR_ITEM + SongColumns.TABLE_NAME;
 
         }
         return null;
@@ -216,11 +216,11 @@ public class MyProvider extends ContentProvider {
         String id = null;
         int matchedId = URI_MATCHER.match(uri);
         switch (matchedId) {
-            case URI_TYPE_ITEM:
-            case URI_TYPE_ITEM_ID:
-                res.table = ItemColumns.TABLE_NAME;
-                res.tablesWithJoins = ItemColumns.TABLE_NAME;
-                res.orderBy = ItemColumns.DEFAULT_ORDER;
+            case URI_TYPE_SONG:
+            case URI_TYPE_SONG_ID:
+                res.table = SongColumns.TABLE_NAME;
+                res.tablesWithJoins = SongColumns.TABLE_NAME;
+                res.orderBy = SongColumns.DEFAULT_ORDER;
                 break;
 
             default:
@@ -228,7 +228,7 @@ public class MyProvider extends ContentProvider {
         }
 
         switch (matchedId) {
-            case URI_TYPE_ITEM_ID:
+            case URI_TYPE_SONG_ID:
                 id = uri.getLastPathSegment();
         }
         if (id != null) {

@@ -11,22 +11,28 @@ import android.os.Build;
 import android.util.Log;
 
 import ru.ifmo.md.exam1.BuildConfig;
-import ru.ifmo.md.exam1.provider.item.ItemColumns;
+import ru.ifmo.md.exam1.provider.song.SongColumns;
 
 public class MySQLiteOpenHelper extends SQLiteOpenHelper {
     private static final String TAG = MySQLiteOpenHelper.class.getSimpleName();
 
     public static final String DATABASE_FILE_NAME = "data.db";
-    private static final int DATABASE_VERSION = 4;
+    private static final int DATABASE_VERSION = 21;
     private static MySQLiteOpenHelper sInstance;
     private final Context mContext;
     private final MySQLiteOpenHelperCallbacks mOpenHelperCallbacks;
 
     // @formatter:off
-    private static final String SQL_CREATE_TABLE_ITEM = "CREATE TABLE IF NOT EXISTS "
-            + ItemColumns.TABLE_NAME + " ( "
-            + ItemColumns._ID + " INTEGER PRIMARY KEY AUTOINCREMENT, "
-            + ItemColumns.NAME + " TEXT "
+    public static final String SQL_CREATE_TABLE_SONG = "CREATE TABLE IF NOT EXISTS "
+            + SongColumns.TABLE_NAME + " ( "
+            + SongColumns._ID + " INTEGER PRIMARY KEY AUTOINCREMENT, "
+            + SongColumns.ARTIST + " TEXT, "
+            + SongColumns.SONG + " TEXT, "
+            + SongColumns.URL + " TEXT, "
+            + SongColumns.DURATION + " TEXT, "
+            + SongColumns.POPULARITY + " TEXT, "
+            + SongColumns.GENRES_MASK + " TEXT, "
+            + SongColumns.YEAR + " INTEGER "
             + " );";
 
     // @formatter:on
@@ -85,7 +91,7 @@ public class MySQLiteOpenHelper extends SQLiteOpenHelper {
     public void onCreate(SQLiteDatabase db) {
         if (BuildConfig.DEBUG) Log.d(TAG, "onCreate");
         mOpenHelperCallbacks.onPreCreate(mContext, db);
-        db.execSQL(SQL_CREATE_TABLE_ITEM);
+        db.execSQL(SQL_CREATE_TABLE_SONG);
         mOpenHelperCallbacks.onPostCreate(mContext, db);
     }
 

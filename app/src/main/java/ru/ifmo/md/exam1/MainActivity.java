@@ -6,6 +6,7 @@ import android.content.Loader;
 import android.database.Cursor;
 import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -14,9 +15,8 @@ import android.widget.ListView;
 
 import java.util.Random;
 
-import ru.ifmo.md.exam1.provider.item.ItemColumns;
-import ru.ifmo.md.exam1.provider.item.ItemContentValues;
-import ru.ifmo.md.exam1.provider.item.ItemCursor;
+import ru.ifmo.md.exam1.provider.song.SongColumns;
+import ru.ifmo.md.exam1.provider.song.SongCursor;
 
 
 public class MainActivity extends ActionBarActivity implements LoaderManager.LoaderCallbacks<Cursor> {
@@ -27,8 +27,8 @@ public class MainActivity extends ActionBarActivity implements LoaderManager.Loa
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        getLoaderManager().restartLoader(0, null, this);
         adapter = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1);
+        getLoaderManager().restartLoader(0, null, this);
         ((ListView)findViewById(R.id.listView)).setAdapter(adapter);
     }
 
@@ -56,14 +56,12 @@ public class MainActivity extends ActionBarActivity implements LoaderManager.Loa
     }
 
     public void onButtonClick(View view) {
-        ItemContentValues cv = new ItemContentValues();
-        cv.putName(Integer.toString(rng.nextInt(5)));
-        cv.insert(getContentResolver());
+
     }
 
     @Override
     public Loader<Cursor> onCreateLoader(int i, Bundle bundle) {
-        return new CursorLoader(this, ItemColumns.CONTENT_URI, null, null, null, null);
+        return new CursorLoader(this, SongColumns.CONTENT_URI, null, null, null, null);
     }
 
     @Override
@@ -73,8 +71,8 @@ public class MainActivity extends ActionBarActivity implements LoaderManager.Loa
         }
         adapter.clear();
         while (cursor.moveToNext()) {
-            ItemCursor itemCursor = new ItemCursor(cursor);
-            adapter.add(itemCursor.getName());
+            SongCursor itemCursor = new SongCursor(cursor);
+            adapter.add(itemCursor.getSong());
         }
         adapter.notifyDataSetChanged();
     }
@@ -85,6 +83,6 @@ public class MainActivity extends ActionBarActivity implements LoaderManager.Loa
     }
 
     public void onButton2Click(View view) {
-        getContentResolver().delete(ItemColumns.CONTENT_URI, null, null);
+        getContentResolver().delete(SongColumns.CONTENT_URI, null, null);
     }
 }
