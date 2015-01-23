@@ -59,6 +59,7 @@ public class PlaylistViewer extends ListActivity implements LoaderManager.Loader
 
         //noinspection SimplifiableIfStatement
         if (id == R.id.action_add) {
+            new AddTrackDialog().show(getFragmentManager(), "addSongDialog");
             return true;
         }
 
