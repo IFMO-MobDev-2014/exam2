@@ -24,44 +24,44 @@ public class Song {
         return name;
     }
 
-    public String getAuthor() {
-        return author;
-    }
-
-    public int getLength() {
-        return length;
-    }
-
-    public String[] getJanres() {
-        return janres;
-    }
-
-    public int getYears() {
-        return year;
-    }
-
-    public int getPopularity() {
-        return popularity;
-    }
-
     public void setName(String name) {
         this.name = name;
+    }
+
+    public String getAuthor() {
+        return author;
     }
 
     public void setAuthor(String author) {
         this.author = author;
     }
 
+    public int getLength() {
+        return length;
+    }
+
     public void setLength(int length) {
         this.length = length;
+    }
+
+    public String[] getJanres() {
+        return janres;
     }
 
     public void setJanres(String[] janres) {
         this.janres = janres;
     }
 
+    public int getYears() {
+        return year;
+    }
+
     public void setYears(int year) {
         this.year = year;
+    }
+
+    public int getPopularity() {
+        return popularity;
     }
 
     public void setPopularity(int popularity) {

@@ -24,27 +24,27 @@ public class Playlist {
         return years;
     }
 
+    public void setYears(int[] years) {
+        this.years = years;
+    }
+
     public String[] getJanres() {
         return janres;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public void setSongsId(String[] authors) {
-        this.authors = authors;
-    }
-
-    public void setName(String name) {
-        this.name = name;
     }
 
     public void setJanres(String[] janres) {
         this.janres = janres;
     }
 
-    public void setYears(int[] years) {
-        this.years = years;
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public void setSongsId(String[] authors) {
+        this.authors = authors;
     }
 }

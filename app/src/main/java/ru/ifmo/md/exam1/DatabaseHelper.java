@@ -11,7 +11,7 @@ import android.database.sqlite.SQLiteOpenHelper;
 
 public class DatabaseHelper extends SQLiteOpenHelper {
 
-    private static final String DB_NAME = "weather.db";
+    private static final String DB_NAME = "music.db";
     private static final int DB_VERSION = 10;
     private PlaylistsTable citiesTable;
     private SongsTable weatherTable;
@@ -24,7 +24,6 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     public void onCreate(SQLiteDatabase sqLiteDatabase) {
         citiesTable = new PlaylistsTable(sqLiteDatabase);
         weatherTable = new SongsTable(sqLiteDatabase);
-        ContentValues contentValues = new ContentValues();
     }
 
     @Override

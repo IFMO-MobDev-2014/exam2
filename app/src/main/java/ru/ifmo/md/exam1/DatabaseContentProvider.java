@@ -11,11 +11,9 @@ import android.net.Uri;
 public class DatabaseContentProvider extends ContentProvider {
     private static final int PLAYLISTS_DIR = 1;
     private static final int SONGS_DIR = 2;
-
-    private static final String AUTHORITY = "com.example.timur.rssreader";
+    private static final String AUTHORITY = "com.example.timur.exam1";
     private static final String BASE_URI = "feeds";
     public static final Uri URI_FEED_DIR = Uri.parse("content://" + AUTHORITY + "/" + BASE_URI);
-
     private static final String UNSUPPORTED_OPERATION = "Unsupported operation type";
     private static final String ILLEGAL_ARGUMENT = "Invalid URI argument: ";
 
@@ -94,11 +92,9 @@ public class DatabaseContentProvider extends ContentProvider {
         }
 
         SQLiteDatabase sqLiteDatabase = databaseHelper.getWritableDatabase();
-        Cursor cr = builder.query(sqLiteDatabase, projection, selection, selectionArgs, null, null, sortOrder);
-
-        cr.setNotificationUri(getContext().getContentResolver(), uri);
-
-        return cr;
+        Cursor cursor = builder.query(sqLiteDatabase, projection, selection, selectionArgs, null, null, sortOrder);
+        cursor.setNotificationUri(getContext().getContentResolver(), uri);
+        return cursor;
     }
 
     @Override

@@ -1,10 +1,6 @@
 package ru.ifmo.md.exam1;
 
-import android.content.ContentValues;
 import android.database.sqlite.SQLiteDatabase;
-
-import org.json.JSONException;
-import org.json.JSONObject;
 
 /**
  * Created by timur on 23.01.15.

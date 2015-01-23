@@ -1,16 +1,12 @@
 package ru.ifmo.md.exam1;
 
-import android.content.ContentValues;
 import android.database.sqlite.SQLiteDatabase;
-
-import org.json.JSONException;
-import org.json.JSONObject;
 
 /**
  * Created by timur on 23.01.15.
  */
 public class PlaylistsTable {
-    public static final String TABLE_NAME = "feeds";
+    public static final String TABLE_NAME = "playlists";
     public static final String DATABASE_DESTROY = "DROP TABLE " + TABLE_NAME + ";";
     public static final String COLUMN_ROWID_QUERY = "rowid as _id";
     public static final String COLUMN_ROWID = "rowid";
@@ -27,11 +23,11 @@ public class PlaylistsTable {
             PLAYLIST_JANRES + " TEXT NOT NULL, " +
             PLAYLIST_YEARS + " TEXT NOT NULL " +
             ");";
-    
+
     public PlaylistsTable(SQLiteDatabase sqLiteDatabase) {
         onCreate(sqLiteDatabase);
     }
-    
+
     public static void onCreate(SQLiteDatabase sqLiteDatabase) {
         sqLiteDatabase.execSQL(DATABASE_CREATE);
     }

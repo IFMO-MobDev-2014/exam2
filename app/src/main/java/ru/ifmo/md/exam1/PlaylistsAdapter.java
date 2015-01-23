@@ -3,16 +3,11 @@ package ru.ifmo.md.exam1;
 import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
-import android.text.Html;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.CursorAdapter;
 import android.widget.TextView;
-import android.widget.Toast;
-
-import java.net.MalformedURLException;
-import java.net.URL;
 
 /**
  * Created by timur on 23.01.15.
