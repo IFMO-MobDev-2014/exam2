@@ -1,8 +1,23 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
-    <string name="app_name">exam2</string>
+    <string name="app_name">exam1</string>
     <string name="hello_world">Hello world!</string>
+    <string name="sort_by_name">Sort by name</string>
+    <string name="sort_by_date">Sort by date</string>
+    <string name="title_activity_post_list">PostListActivity</string>
     <string name="action_settings">Settings</string>
+    <string name="title_activity_edit">EditActivity</string>
+    <string name="delete_item">Delete item</string>
+    <string name="click_to_delete">Click on item to delete</string>
+    <string name="edit_item">Edit item</string>
+    <string name="save_button">SAVE</string>
+    <string name="click_to_edit">Click on item to edit</string>
+    <string name="title_activity_main">MainActivity</string>
+    <string name="title_activity_tracks">TracksActivity</string>
+    <string name="title_activity_details">DetailsActivity</string>
+    <string name="ok">OK</string>
+    <string name="no">CANCEL</string>
+    <string name="dialog_title">Add playlist</string>
 
 </resources>
