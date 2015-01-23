@@ -13,6 +13,7 @@ import android.util.Log;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import java.io.IOException;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 
@@ -100,8 +101,10 @@ public class ItemsListProvider extends ContentProvider implements BaseColumns {
                 case "songs":
                     return db.query(SONGS, null, null, null, null, null, null);
                 case "playlist":
-                    return db.rawQuery("SELECT " + SONGS + ".* FROM " + PLAYLISTS +
-                            " WHERE " + PLAYLIST_REF + " = ?", new String[]{uri.getQueryParameter("playlistId")});
+                    return db.rawQuery("SELECT * FROM " + SONGS + " WHERE " + _ID +
+                                    " = (SELECT " + SONG_INFO + " FROM " + PLAYLISTS +
+                                    " WHERE " + PLAYLIST_REF + " = ?)",
+                            new String[]{uri.getQueryParameter("playlistId")});
                 case "playlistNames":
                     return db.query(PLAYLIST_NAMES, null, null, null, null, null, null);
             }
@@ -123,6 +126,9 @@ public class ItemsListProvider extends ContentProvider implements BaseColumns {
         public float popularity;
         public List<String> genres;
         public int year;
+
+        public Song() {
+        }
 
         public String getName() {
             return name;
@@ -217,16 +223,23 @@ public class ItemsListProvider extends ContentProvider implements BaseColumns {
                     genres.addAll(song.genres);
                 }
 
+                HashMap<String, Long> genresMap = new HashMap<>();
                 ContentValues values = new ContentValues(5);
                 for (String genre : genres) {
                     values.put(GENRE, genre);
-                    db.insert(GENRES, null, values);
+                    genresMap.put(genre, db.insert(GENRES, null, values));
                 }
+                values.clear();
 
                 for (Song song : songs) {
-                    int ind = song.name.indexOf(" - ");
-                    values.put(ARTIST, song.name.substring(0, ind));
-                    values.put(NAME, song.name.substring(ind + 3, song.name.length()));
+                    int ind = song.name.indexOf(" – ");
+                    if (ind == -1) {
+                        values.put(NAME, song.name);
+                        Log.w("ItemsListProvider", "Bad formatted name: " + song.name);
+                    } else {
+                        values.put(ARTIST, song.name.substring(0, ind));
+                        values.put(NAME, song.name.substring(ind + 3, song.name.length()));
+                    }
                     values.put(POPULARITY, song.popularity);
                     values.put(YEAR, song.year);
                     values.put(URL, song.url);
@@ -241,11 +254,10 @@ public class ItemsListProvider extends ContentProvider implements BaseColumns {
                             }
                             first = false;
                             builder.append("(").append(rowId)
-                                    .append(", SELECT " + _ID + " FROM " + GENRES +
-                                            " WHERE " + GENRE + " = '" + genre + "')");
+                                    .append(", ").append(genresMap.get(genre)).append(")");
                         }
                         String q = builder.append(';').toString();
-                        Log.v("ItemsListProvider", q);
+                        //Log.v("ItemsListProvider", q);
                         db.execSQL(q);
                     }
                 }
