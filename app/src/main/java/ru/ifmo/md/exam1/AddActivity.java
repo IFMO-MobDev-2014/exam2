@@ -41,8 +41,9 @@ public class AddActivity extends ActionBarActivity {
 
         if(list != null) {
             list.moveToFirst();
-            while (!list.isLast()) {
+            while (!list.isAfterLast()) {
                 ans += list.getInt(list.getColumnIndex(SongsBase._ID)) + " ";
+                list.moveToNext();
             }
             list.close();
 
