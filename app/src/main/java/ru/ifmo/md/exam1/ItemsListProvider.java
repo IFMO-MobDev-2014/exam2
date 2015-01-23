@@ -76,7 +76,7 @@ public class ItemsListProvider extends ContentProvider implements BaseColumns {
                     db.insert(PLAYLIST_NAMES, null, values);
                     return null;
                 case "add_song":
-                    values.put(SONG_REF, Long.parseLong(uri.getQueryParameter("songId")));
+                    values.put(SONG_INFO, Long.parseLong(uri.getQueryParameter("songId")));
                     values.put(PLAYLIST_REF, Long.parseLong(uri.getQueryParameter("playlistId")));
                     db.insert(PLAYLISTS, null, values);
                     return null;
