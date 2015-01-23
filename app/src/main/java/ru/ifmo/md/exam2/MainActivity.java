@@ -81,7 +81,7 @@ public class MainActivity extends ActionBarActivity
             final Spinner newPlaylistsYearSpinner =
                     (Spinner) dialog.findViewById(R.id.new_playlist_year_spinner);
             newPlaylistsYearSpinner.setAdapter(new YearAdapter(this));
-            newPlaylistsYearSpinner.setSelection(2014);
+            newPlaylistsYearSpinner.setSelection(2015);
             final Context context = this;
             newPlaylistOkButton.setOnClickListener(new View.OnClickListener() {
                 @Override
