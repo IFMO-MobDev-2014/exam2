@@ -1,5 +1,6 @@
 package ru.ifmo.md.exam2;
 
+import android.app.Dialog;
 import android.app.LoaderManager;
 import android.app.ProgressDialog;
 import android.content.Context;
@@ -10,16 +11,22 @@ import android.database.Cursor;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v7.app.ActionBarActivity;
+import android.text.method.CharacterPickerDialog;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
+import android.widget.Button;
+import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.SimpleCursorAdapter;
 
 import ru.ifmo.md.exam2.provider.playlist.PlaylistColumns;
+import ru.ifmo.md.exam2.provider.playlist.PlaylistContentValues;
+import ru.ifmo.md.exam2.provider.playlist.PlaylistCursor;
 import ru.ifmo.md.exam2.provider.playlist.PlaylistSelection;
+import ru.ifmo.md.exam2.provider.playlisttotrack.PlaylistToTrackContentValues;
 import ru.ifmo.md.exam2.provider.playlisttotrack.PlaylistToTrackCursor;
 import ru.ifmo.md.exam2.provider.playlisttotrack.PlaylistToTrackSelection;
 import ru.ifmo.md.exam2.provider.track.TrackCursor;
@@ -61,6 +68,65 @@ public class MainActivity extends ActionBarActivity
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         int id = item.getItemId();
+
+        if (id == R.id.action_new_playlist) {
+            Dialog dialog = new Dialog(this);
+            dialog.setContentView(R.layout.add_playlist_dialog);
+
+            final EditText newPlaylistName = (EditText) dialog.findViewById(R.id.new_playlist_name);
+            final EditText newPlaylistAuthor = (EditText) dialog.findViewById(R.id.new_playlist_author);
+            Button newPlaylistOkButton = (Button) dialog.findViewById(R.id.new_playlist_add_button);
+
+            final Context context = this;
+            newPlaylistOkButton.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    final String name = newPlaylistName.getText().toString();
+                    final String author = newPlaylistAuthor.getText().toString();
+
+                    final ProgressDialog progressDialog = new ProgressDialog(context);
+                    progressDialog.setCancelable(false);
+                    progressDialog.show();
+                    new AsyncTask<Void, Void, Void>() {
+                        @Override
+                        protected Void doInBackground(Void... params) {
+                            TrackCursor cursor = new TrackSelection()
+                                    .authorLike(author)
+                                    .query(getContentResolver());
+
+                            PlaylistContentValues values = new PlaylistContentValues();
+                            values.putName(name);
+                            values.insert(getContentResolver());
+                            PlaylistCursor playlistCursor = new PlaylistSelection()
+                                    .name(name)
+                                    .query(getContentResolver());
+                            playlistCursor.moveToFirst();
+                            long playlistId = playlistCursor.getId();
+
+                            if (cursor.moveToFirst()) {
+                                do {
+                                    new PlaylistToTrackContentValues()
+                                            .putPlaylistId(playlistId)
+                                            .putTrackId(cursor.getId())
+                                            .insert(getContentResolver());
+                                } while (cursor.moveToNext());
+                            }
+
+                            return null;
+                        }
+
+                        @Override
+                        protected void onPostExecute(Void aVoid) {
+                            super.onPostExecute(aVoid);
+                            progressDialog.dismiss();
+                        }
+                    }.execute();
+                }
+            });
+
+            dialog.show();
+        }
+
         return super.onOptionsItemSelected(item);
     }
 

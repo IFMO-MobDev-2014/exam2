@@ -26,8 +26,8 @@ public class TracksParser {
             Track track = new Track();
             String authorAndName = trackJSON.getString("name");
             int pos = authorAndName.indexOf('–');
-            track.setName(authorAndName.substring(0, pos - 1));
-            track.setAuthor(authorAndName.substring(pos + 1));
+            track.setAuthor(authorAndName.substring(0, pos - 1));
+            track.setName(authorAndName.substring(pos + 1));
             track.setYear(trackJSON.getInt("year"));
             JSONArray genresJSON = trackJSON.getJSONArray("genres");
             for (int j = 0; j < genresJSON.length(); j++) {
