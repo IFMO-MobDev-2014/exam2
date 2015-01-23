@@ -44,11 +44,11 @@ public class ParseSongs extends IntentService {
         }
         Log.e("LOG", "after for");
 
+        Log.e("LOG", "before bulkinsert");
+        getContentResolver().bulkInsert(SongsProvider.CONTENT_URI_SONG, values);
         PlayList playList = new PlayList();
         playList.setName("all songs");
         playList.setDate(getCurDate());
-        Log.e("LOG", "before bulkinsert");
-        getContentResolver().bulkInsert(SongsProvider.CONTENT_URI_SONG, values);
         Log.e("LOG", "before insert");
         getContentResolver().insert(SongsProvider.CONTENT_URI_PLAY_LIST, playList.generateContentValues());
     }

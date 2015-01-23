@@ -13,19 +13,25 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.CheckBox;
 import android.widget.ListView;
 import android.widget.SimpleCursorAdapter;
 import android.widget.Spinner;
 import android.widget.TextView;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Calendar;
 import java.util.Collections;
+import java.util.Date;
 import java.util.HashSet;
 
 import ru.eugene.exam2.R;
 import ru.eugene.exam2.db.SongsProvider;
+import ru.eugene.exam2.items.PlayList;
 import ru.eugene.exam2.items.PlayListsSource;
 import ru.eugene.exam2.items.SongsSource;
 
@@ -36,6 +42,9 @@ public class AddPlayList extends ActionBarActivity implements LoaderManager.Load
     private HashSet<String> setGen = new HashSet<>();
     private ListView listGen;
     private ArrayList<String> arrayGen = new ArrayList<>();
+    private TextView name;
+    private String resGen = "";
+    private ArrayList<Boolean> used = new ArrayList<>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -58,6 +67,17 @@ public class AddPlayList extends ActionBarActivity implements LoaderManager.Load
             }
         };
         listGen.setAdapter(adapter);
+
+        listGen.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                Log.e("LOG", "click");
+                used.set(position, !used.get(position));
+                ((CheckBox) view.findViewById(R.id.checkGen)).setChecked(used.get(position));
+            }
+        });
+
+        name = (TextView) findViewById(R.id.newName);
 
         getLoaderManager().initLoader(0, null, this);
     }
@@ -99,7 +119,8 @@ public class AddPlayList extends ActionBarActivity implements LoaderManager.Load
                 int year = data.getInt(data.getColumnIndex(SongsSource.COLUMN_YEAR));
                 String gen = data.getString(data.getColumnIndex(SongsSource.COLUMN_GENRES));
                 set.add(year);
-                setGen.add(gen);
+                if (!gen.isEmpty())
+                    setGen.add(gen);
             } while (data.moveToNext());
         }
 
@@ -113,6 +134,7 @@ public class AddPlayList extends ActionBarActivity implements LoaderManager.Load
 
         for (String i : arrayGen) {
             this.arrayGen.add(i);
+            used.add(false);
         }
         adapter.notifyDataSetChanged();
 
@@ -121,6 +143,44 @@ public class AddPlayList extends ActionBarActivity implements LoaderManager.Load
 
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         years.setAdapter(adapter);
+    }
+
+    public void finish(View v) {
+
+        PlayList playList = new PlayList();
+        playList.setName("all songs");
+        playList.setDate(getCurDate());
+        playList.setName(name.getText().toString());
+        playList.setYear(Integer.parseInt(years.getSelectedItem().toString()));
+
+        int i = 0;
+        for (Boolean b : used) {
+            if (b) {
+                if (resGen.isEmpty()) {
+                    resGen = SongsSource.COLUMN_GENRES + "='" + arrayGen.get(i) + "'";
+                } else {
+                    resGen += " AND " + SongsSource.COLUMN_GENRES + "='" + arrayGen.get(i) + "'";
+                }
+            }
+           i++;
+        }
+        Log.e("LOG", "newGen" + resGen);
+        playList.setGenres(resGen);
+
+        Log.e("LOG", "before insert");
+        getContentResolver().insert(SongsProvider.CONTENT_URI_PLAY_LIST, playList.generateContentValues());
+        finish();
+    }
+
+    private String getCurDate() {
+        Long curMillis = System.currentTimeMillis();
+        Date curDate = new Date(curMillis);
+        SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+
+        Calendar cal = Calendar.getInstance();
+        formatter.setTimeZone(cal.getTimeZone());
+
+        return formatter.format(curDate);
     }
 
     @Override

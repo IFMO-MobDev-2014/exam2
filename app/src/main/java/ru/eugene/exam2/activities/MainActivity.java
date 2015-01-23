@@ -34,6 +34,7 @@ import ru.eugene.exam2.R;
 import ru.eugene.exam2.db.AsyncInsert;
 import ru.eugene.exam2.db.ParseSongs;
 import ru.eugene.exam2.db.SongsProvider;
+import ru.eugene.exam2.items.PlayList;
 import ru.eugene.exam2.items.PlayListsSource;
 import ru.eugene.exam2.items.Song;
 import ru.eugene.exam2.items.SongsSource;
@@ -59,6 +60,18 @@ public class MainActivity extends ActionBarActivity implements LoaderManager.Loa
         super.onPause();
     }
 
+    private PlayList cuPlay(Cursor select) {
+        PlayList playList = new PlayList();
+
+        if (select != null) {
+            playList.setGenres(select.getString(select.getColumnIndex(PlayListsSource.COLUMN_GENRES)));
+            playList.setYear(select.getInt(select.getColumnIndex(PlayListsSource.COLUMN_YEAR)));
+//            Log.e("LOG", playList.getGenres());
+        }
+
+        return playList;
+    }
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -78,6 +91,13 @@ public class MainActivity extends ActionBarActivity implements LoaderManager.Loa
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 Intent intent = new Intent(context, ViewPlayList.class);
+                Cursor temp = adapter.getCursor();
+                temp.moveToPosition(position);
+                if (position == 0) {
+                    intent.putExtra("res", cuPlay(temp));
+                } else {
+                    intent.putExtra("res", cuPlay(temp));
+                }
                 startActivity(intent);
             }
         });

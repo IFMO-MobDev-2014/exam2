@@ -13,11 +13,14 @@ import android.widget.SimpleCursorAdapter;
 
 import ru.eugene.exam2.R;
 import ru.eugene.exam2.db.SongsProvider;
+import ru.eugene.exam2.items.PlayList;
+import ru.eugene.exam2.items.PlayListsSource;
 import ru.eugene.exam2.items.SongsSource;
 
 public class ViewPlayList extends ActionBarActivity implements LoaderManager.LoaderCallbacks<Cursor> {
     private ListView list;
     private SimpleCursorAdapter adapter;
+    private PlayList select;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -30,6 +33,7 @@ public class ViewPlayList extends ActionBarActivity implements LoaderManager.Loa
 
         adapter = new SimpleCursorAdapter(this, R.layout.play_list_item, null, from, to, 0);
         list.setAdapter(adapter);
+        select = (PlayList) getIntent().getSerializableExtra("res");
 
         getLoaderManager().initLoader(0, null, this);
     }
@@ -59,7 +63,14 @@ public class ViewPlayList extends ActionBarActivity implements LoaderManager.Loa
 
     @Override
     public Loader<Cursor> onCreateLoader(int id, Bundle args) {
-        return new CursorLoader(this, SongsProvider.CONTENT_URI_SONG, null, null, null, null);
+        if (select.getGenres() != null) {
+            return new CursorLoader(this, SongsProvider.CONTENT_URI_SONG, null,
+                    select.getGenres() + " AND " +
+                            PlayListsSource.COLUMN_YEAR + "=?", new String[]{
+                    String.valueOf(select.getYear())}, null);
+        } else {
+            return new CursorLoader(this, SongsProvider.CONTENT_URI_SONG, null, null, null, null);
+        }
     }
 
     @Override

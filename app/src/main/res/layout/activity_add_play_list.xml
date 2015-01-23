@@ -19,24 +19,7 @@
         <EditText
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:id="@+id/editText2" />
-    </LinearLayout>
-
-    <LinearLayout
-        android:orientation="horizontal"
-        android:layout_width="fill_parent"
-        android:layout_height="wrap_content" >
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="artist: "
-            android:id="@+id/textView" />
-
-        <EditText
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:id="@+id/newArtist" />
+            android:id="@+id/newName" />
     </LinearLayout>
 
     <Spinner
@@ -45,15 +28,17 @@
         android:id="@+id/spinner" />
 
     <ListView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:id="@+id/list_gen" />
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:id="@+id/list_gen"
+        android:layout_weight="1" />
 
     <Button
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="finish"
         android:id="@+id/finish"
-        android:onClick="finish" />
+        android:onClick="finish"
+        android:layout_gravity="right" />
 
 </LinearLayout>

@@ -12,7 +12,7 @@ public class PlayList implements Serializable {
     private String name;
     private String date;
     private String artist;
-    private String year;
+    private int year;
     private String genres;
 
     public String getDate() {
@@ -31,11 +31,11 @@ public class PlayList implements Serializable {
         this.artist = artist;
     }
 
-    public String getYear() {
+    public int getYear() {
         return year;
     }
 
-    public void setYear(String year) {
+    public void setYear(int year) {
         this.year = year;
     }
 
