@@ -1,0 +1,22 @@
+{
+    "fields": [
+	{
+	    "name": "item_id",
+	    "type": "Long",
+	    "nullable": false,
+	    "foreignKey": {
+		"table": "item",
+		"onDelete": "NO ACTION"
+	    }
+	},
+	{
+	    "name": "label_id",
+	    "type": "Long",
+	    "nullable": false,
+	    "foreignkey": {
+		"table": "label",
+		"onDelete": "NO ACTION"
+	    }
+	}
+    ]
+}
