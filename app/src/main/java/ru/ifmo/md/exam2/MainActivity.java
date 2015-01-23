@@ -17,10 +17,12 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.SimpleCursorAdapter;
+import android.widget.Spinner;
 
 import ru.ifmo.md.exam2.provider.playlist.PlaylistColumns;
 import ru.ifmo.md.exam2.provider.playlist.PlaylistContentValues;
@@ -76,13 +78,24 @@ public class MainActivity extends ActionBarActivity
             final EditText newPlaylistName = (EditText) dialog.findViewById(R.id.new_playlist_name);
             final EditText newPlaylistAuthor = (EditText) dialog.findViewById(R.id.new_playlist_author);
             Button newPlaylistOkButton = (Button) dialog.findViewById(R.id.new_playlist_add_button);
-
+            final Spinner newPlaylistsYearSpinner =
+                    (Spinner) dialog.findViewById(R.id.new_playlist_year_spinner);
+            newPlaylistsYearSpinner.setAdapter(new YearAdapter(this));
+            newPlaylistsYearSpinner.setSelection(2014);
             final Context context = this;
             newPlaylistOkButton.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
                     final String name = newPlaylistName.getText().toString();
                     final String author = newPlaylistAuthor.getText().toString();
+                    Integer yearBuf = newPlaylistsYearSpinner.getSelectedItemPosition();
+                    if (yearBuf == 2015) {
+                        yearBuf = null;
+                    } else if (yearBuf > 2015) {
+                        yearBuf--;
+                    }
+
+                    final Integer year = yearBuf;
 
                     final ProgressDialog progressDialog = new ProgressDialog(context);
                     progressDialog.setCancelable(false);
@@ -90,8 +103,13 @@ public class MainActivity extends ActionBarActivity
                     new AsyncTask<Void, Void, Void>() {
                         @Override
                         protected Void doInBackground(Void... params) {
-                            TrackCursor cursor = new TrackSelection()
-                                    .authorLike(author)
+                            TrackSelection trackSelection = new TrackSelection()
+                                    .authorLike(author);
+
+                            if (year == null) {
+                                trackSelection.year(year);
+                            }
+                            TrackCursor cursor = trackSelection
                                     .query(getContentResolver());
 
                             PlaylistContentValues values = new PlaylistContentValues();

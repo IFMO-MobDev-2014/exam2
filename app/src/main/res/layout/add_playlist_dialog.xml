@@ -13,11 +13,15 @@
         android:layout_height="wrap_content"
         android:id="@+id/new_playlist_author" />
 
+    <Spinner
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/new_playlist_year_spinner" />
+
     <Button
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="@string/OK"
         android:id="@+id/new_playlist_add_button" />
-
 
 </LinearLayout>
