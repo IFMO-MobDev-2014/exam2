@@ -6,6 +6,7 @@ import android.content.Loader;
 import android.database.Cursor;
 import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.ListView;
@@ -16,12 +17,15 @@ import java.util.ArrayList;
 public class ShowPlaylist extends ActionBarActivity implements LoaderManager.LoaderCallbacks<Cursor>{
 
     ListView listView;
+    String playList;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_show_playlist);
         listView = (ListView) findViewById(R.id.listView2);
+        playList = getIntent().getStringExtra("Playlist");
+        getLoaderManager().initLoader(34, null, this);
     }
 
 
@@ -54,6 +58,7 @@ public class ShowPlaylist extends ActionBarActivity implements LoaderManager.Loa
     }
 
     public void setListView(Cursor cursor) {
+        Log.d("asdasd", "ASDASDASDASDASDASDASDASDASD");
         cursor.moveToFirst();
         ArrayList<Song> items = new ArrayList<Song>();
         while (!cursor.isAfterLast()) {
