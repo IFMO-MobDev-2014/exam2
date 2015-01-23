@@ -18,5 +18,7 @@
     <string name="yera">Year</string>
     <string name="popularity">Popularity</string>
     <string name="delete">Delete</string>
+    <string name="original_order">Original order</string>
+    <string name="sort_pop">Sort by popularity</string>
 
 </resources>

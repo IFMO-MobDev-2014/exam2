@@ -11,6 +11,7 @@ import android.content.Loader;
 import android.database.Cursor;
 import android.os.Bundle;
 import android.app.ListFragment;
+import android.preference.PreferenceManager;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -55,11 +56,15 @@ public class TracksFragment extends ListFragment implements LoaderManager.Loader
     }
 
 
-
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+        menu.clear();
         inflater.inflate(R.menu.menu_tracks, menu);
     }
+
+    public static final String PREF_SORT_MODE = "sort";
+    public static final String PREF_SORT_MODE_POP = "popularity";
+    public static final String PREF_SORT_MODE_DEFAULT = "default";
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
@@ -69,7 +74,33 @@ public class TracksFragment extends ListFragment implements LoaderManager.Loader
                     .addToBackStack(null)
                     .commit();
         }
+        if (item.getItemId() == R.id.action_sort_default) {
+            PreferenceManager
+                    .getDefaultSharedPreferences(getActivity())
+                    .edit()
+                    .putString(PREF_SORT_MODE, PREF_SORT_MODE_DEFAULT)
+                    .apply();
+            getActivity().invalidateOptionsMenu();
+            reload();
+        }
+        if (item.getItemId() == R.id.action_sort_pop) {
+            PreferenceManager
+                    .getDefaultSharedPreferences(getActivity())
+                    .edit()
+                    .putString(PREF_SORT_MODE, PREF_SORT_MODE_POP)
+                    .apply();
+            getActivity().invalidateOptionsMenu();
+            reload();
+        }
         return true;
+    }
+
+    @Override
+    public void onPrepareOptionsMenu(Menu menu) {
+        boolean defaultSort = PreferenceManager.getDefaultSharedPreferences(getActivity())
+                .getString(PREF_SORT_MODE, PREF_SORT_MODE_DEFAULT).equals(PREF_SORT_MODE_DEFAULT);
+        menu.findItem(R.id.action_sort_default).setVisible(!defaultSort);
+        menu.findItem(R.id.action_sort_pop).setVisible(defaultSort);
     }
 
     @Override

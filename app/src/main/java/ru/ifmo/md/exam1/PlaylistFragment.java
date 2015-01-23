@@ -52,6 +52,7 @@ public class PlaylistFragment extends ListFragment implements LoaderManager.Load
 
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+        menu.clear();
         inflater.inflate(R.menu.menu_playlists, menu);
     }
 

@@ -5,6 +5,7 @@ import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
+import android.preference.PreferenceManager;
 import android.renderscript.Script;
 
 import java.util.ArrayList;
@@ -145,9 +146,12 @@ public class DBAdapter {
     }
 
     public Cursor getTracks(String where) {
+        String sort = PreferenceManager.getDefaultSharedPreferences(context)
+                .getString(TracksFragment.PREF_SORT_MODE, TracksFragment.PREF_SORT_MODE_DEFAULT)
+                .equals(TracksFragment.PREF_SORT_MODE_DEFAULT) ? null : KEY_TRACKS_POPULARITY+ " DESC";
         return db.query(TABLE_NAME_TRACKS,
                 new String[]{KEY_ID, KEY_TRACKS_ARTIST, KEY_TRACKS_NAME, KEY_TRACKS_YEAR, KEY_TRACKS_POPULARITY},
-                where, null, null, null, null);
+                where, null, null, null, sort);
     }
 
     public Cursor getGenres(String where) {
@@ -222,10 +226,14 @@ public class DBAdapter {
     }
 
     public Cursor getTracksByPlaylistId(long playlistId) {
+        String sort = PreferenceManager.getDefaultSharedPreferences(context)
+                .getString(TracksFragment.PREF_SORT_MODE, TracksFragment.PREF_SORT_MODE_DEFAULT)
+                .equals(TracksFragment.PREF_SORT_MODE_DEFAULT) ? null : KEY_TRACKS_POPULARITY+ " DESC";
         return db.query(TABLE_NAME_TRACKS_PLAYLISTS + " AS p JOIN " + TABLE_NAME_TRACKS + " AS t ON " +
                         "p." + KEY_TRACKS_PLAYLISTS_TRACK_ID + "= t." + KEY_ID,
                 new String[]{"t." + KEY_ID + " AS " + KEY_ID, KEY_TRACKS_ARTIST, KEY_TRACKS_NAME, KEY_TRACKS_YEAR, KEY_TRACKS_POPULARITY},
-                "p." + KEY_ID + "=" + playlistId, null, null, null, null);
+                "p." + KEY_ID + "=" + playlistId, null, null, null, sort);
+
     }
 
     public long addGenre(ContentValues cv) {
