@@ -1,8 +1,9 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools" tools:context=".MainActivity">
-    <item android:id="@+id/action_songs" android:title="Songs"
+    <item android:id="@+id/action_songs_play" android:title="Songs"
         android:orderInCategory="100" app:showAsAction="never" />
-    <item android:id="@+id/action_playlists" android:title="Playlists"
+    <item android:id="@+id/action_playlists_play" android:title="Playlists"
         android:orderInCategory="100" app:showAsAction="never" />
+    <item android:id="@+id/action_add" android:title="Add" app:showAsAction="always" />
 </menu>
