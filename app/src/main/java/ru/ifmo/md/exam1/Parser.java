@@ -1,9 +1,7 @@
 package ru.ifmo.md.exam1;
 
-import android.app.IntentService;
 import android.content.ContentValues;
 import android.content.Context;
-import android.content.Intent;
 import android.database.sqlite.SQLiteDatabase;
 import android.util.Log;
 
@@ -13,11 +11,9 @@ import org.json.JSONObject;
 
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.Iterator;
 import java.util.Scanner;
 import java.util.TreeSet;
 
-import ru.ifmo.md.exam1.provider.Playlist;
 import ru.ifmo.md.exam1.provider.playlists.PlaylistsColumns;
 import ru.ifmo.md.exam1.provider.playlists.PlaylistsContentValues;
 import ru.ifmo.md.exam1.provider.song.SongColumns;

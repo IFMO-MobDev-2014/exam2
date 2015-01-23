@@ -51,7 +51,13 @@ public class Song {
     }
 
     Song(SongCursor cursor) {
-
+        artist = cursor.getArtist();
+        song = cursor.getSong();
+        url = cursor.getUrl();
+        duration = cursor.getDuration();
+        popularity = cursor.getPopularity();
+        genres_mask = cursor.getGenresMask();
+        year = cursor.getYear();
     }
 
     public SongContentValues getContentValues() {
@@ -64,5 +70,10 @@ public class Song {
         contentValues.putGenresMask(genres_mask);
         contentValues.putYear(year);
         return contentValues;
+    }
+
+    @Override
+    public String toString() {
+        return artist + " - " + song;
     }
 }

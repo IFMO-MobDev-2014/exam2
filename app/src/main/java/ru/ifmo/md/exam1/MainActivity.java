@@ -14,11 +14,8 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
 
-import ru.ifmo.md.exam1.provider.Playlist;
 import ru.ifmo.md.exam1.provider.playlists.PlaylistsColumns;
 import ru.ifmo.md.exam1.provider.playlists.PlaylistsCursor;
-import ru.ifmo.md.exam1.provider.song.SongColumns;
-import ru.ifmo.md.exam1.provider.song.SongCursor;
 
 
 public class MainActivity extends ActionBarActivity implements LoaderManager.LoaderCallbacks<Cursor>{
