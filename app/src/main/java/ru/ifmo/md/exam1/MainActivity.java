@@ -1,17 +1,35 @@
 package ru.ifmo.md.exam1;
 
+import android.app.LoaderManager;
+import android.content.CursorLoader;
+import android.content.Loader;
+import android.database.Cursor;
 import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.ArrayAdapter;
+import android.widget.ListView;
+
+import java.util.Random;
+
+import ru.ifmo.md.exam1.provider.item.ItemColumns;
+import ru.ifmo.md.exam1.provider.item.ItemContentValues;
+import ru.ifmo.md.exam1.provider.item.ItemCursor;
 
 
-public class MainActivity extends ActionBarActivity {
+public class MainActivity extends ActionBarActivity implements LoaderManager.LoaderCallbacks<Cursor> {
+    ArrayAdapter<String> adapter;
+    Random rng = new Random(58);
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        getLoaderManager().restartLoader(0, null, this);
+        adapter = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1);
+        ((ListView)findViewById(R.id.listView)).setAdapter(adapter);
     }
 
 
@@ -35,5 +53,38 @@ public class MainActivity extends ActionBarActivity {
         }
 
         return super.onOptionsItemSelected(item);
+    }
+
+    public void onButtonClick(View view) {
+        ItemContentValues cv = new ItemContentValues();
+        cv.putName(Integer.toString(rng.nextInt(5)));
+        cv.insert(getContentResolver());
+    }
+
+    @Override
+    public Loader<Cursor> onCreateLoader(int i, Bundle bundle) {
+        return new CursorLoader(this, ItemColumns.CONTENT_URI, null, null, null, null);
+    }
+
+    @Override
+    public void onLoadFinished(Loader<Cursor> cursorLoader, Cursor cursor) {
+        if (adapter == null) {
+            adapter = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1);
+        }
+        adapter.clear();
+        while (cursor.moveToNext()) {
+            ItemCursor itemCursor = new ItemCursor(cursor);
+            adapter.add(itemCursor.getName());
+        }
+        adapter.notifyDataSetChanged();
+    }
+
+    @Override
+    public void onLoaderReset(Loader<Cursor> cursorLoader) {
+        adapter = null;
+    }
+
+    public void onButton2Click(View view) {
+        getContentResolver().delete(ItemColumns.CONTENT_URI, null, null);
     }
 }
