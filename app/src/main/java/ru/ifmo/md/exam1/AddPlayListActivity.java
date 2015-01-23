@@ -14,7 +14,7 @@ import java.util.ArrayList;
 // "genres":["Blues","Alternative","Soul"],
 // "year":2009}
 
-public class ViewItemActivity extends ActionBarActivity {
+public class AddPlayListActivity extends ActionBarActivity {
     ArrayList<Track> items;
     int pos;
     @Override
