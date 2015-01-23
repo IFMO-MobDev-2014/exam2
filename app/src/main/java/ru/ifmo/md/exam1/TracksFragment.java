@@ -106,6 +106,12 @@ public class TracksFragment extends ListFragment implements LoaderManager.Loader
     @Override
     public void onResume() {
         super.onResume();
+        getActivity().setTitle(getActivity().getString(R.string.all_tracks));
+        if (playlistId != -1) {
+            Cursor c = DBAdapter.getOpenedInstance(getActivity()).getPlaylists(DBAdapter.KEY_ID + "='" + playlistId + "'");
+            if (c.moveToFirst())
+                getActivity().setTitle(c.getString(c.getColumnIndex(DBAdapter.KEY_PLAYLISTS_NAME)));
+        }
     }
 
     public static final int REQUEST_DETAILS = 115;
@@ -121,8 +127,7 @@ public class TracksFragment extends ListFragment implements LoaderManager.Loader
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        if (resultCode == Activity.RESULT_OK)
-            reload();
+        reload();
     }
 
     private void reload() {

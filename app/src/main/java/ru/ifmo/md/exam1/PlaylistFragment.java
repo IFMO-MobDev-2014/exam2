@@ -47,6 +47,7 @@ public class PlaylistFragment extends ListFragment implements LoaderManager.Load
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setHasOptionsMenu(true);
+        getActivity().setTitle(getActivity().getString(R.string.playlists));
         fillData();
     }
 
@@ -65,6 +66,12 @@ public class PlaylistFragment extends ListFragment implements LoaderManager.Load
                     new Intent(getActivity(), AddPlaylistActivity.class), REQUEST_ADD_PLAYLIST);
         }
         return true;
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        getActivity().setTitle(getActivity().getString(R.string.playlists));
     }
 
     @Override
