@@ -5,6 +5,6 @@
 	    "type": "String",
 	    "nullable": false,
 	    "index": true,
-	}
+	},
     ]
 }

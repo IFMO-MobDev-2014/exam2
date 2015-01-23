@@ -1,20 +1,20 @@
 {
     "fields": [
 	{
-	    "name": "item_id",
+	    "name": "playlist_id",
 	    "type": "Long",
 	    "nullable": false,
 	    "foreignKey": {
-		"table": "item",
+		"table": "playlist",
 		"onDelete": "NO ACTION"
 	    }
 	},
 	{
-	    "name": "label_id",
+	    "name": "track_id",
 	    "type": "Long",
 	    "nullable": false,
 	    "foreignkey": {
-		"table": "label",
+		"table": "track",
 		"onDelete": "NO ACTION"
 	    }
 	}

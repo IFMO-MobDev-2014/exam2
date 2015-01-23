@@ -16,6 +16,11 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+
+         <provider
+            android:name="ru.ifmo.md.exam2.provider.MyContentProvider"
+            android:authorities="ru.ifmo.md.exam2.provider"
+            android:exported="false" />
     </application>
 
 </manifest>
