@@ -63,7 +63,7 @@ class PlayList(val name: String, val songs: List[Song]) {
   def getValues = {
     import DatabaseHelper._
     val values = new ContentValues
-    values.put(PLAYLISTS_NAME, name)
+    values.put(PLAYLIST_NAME, name)
     values.put(PLAYLISTS_TABLE_NAME, songs.map(_.getId).mkString(":"))
     values
   }

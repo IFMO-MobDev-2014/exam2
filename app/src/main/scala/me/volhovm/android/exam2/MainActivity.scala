@@ -1,7 +1,5 @@
 package me.volhovm.android.exam2
 
-import java.io.{BufferedReader, InputStreamReader}
-
 import android.app.Activity
 import android.app.LoaderManager.LoaderCallbacks
 import android.content.{AsyncTaskLoader, Intent, Loader}
@@ -9,7 +7,6 @@ import android.os.Bundle
 import android.util.Log
 import android.view.{Menu, MenuItem, View}
 import android.widget.{AdapterView, ArrayAdapter, ListView, Toast}
-import org.json.JSONArray
 
 class MainActivity extends Activity with LoaderCallbacks[List[PlayList]] {
   private var mPlaylists: List[PlayList] = null
@@ -20,30 +17,7 @@ class MainActivity extends Activity with LoaderCallbacks[List[PlayList]] {
   override def onCreate(savedInstanceState: Bundle): Unit = {
     super.onCreate(savedInstanceState)
     Log.d(this.toString, "In main activity")
-    mDatabaseHelper = new DatabaseHelper(this, () => {
-      val ins = new BufferedReader(new InputStreamReader(getResources.openRawResource(R.raw.music)))
-      val jsonArray: JSONArray = new JSONArray(ins.readLine())
-      (for (i <- 0 until jsonArray.length()) yield {
-        val currentItem = jsonArray.getJSONObject(i)
-        val fullname = currentItem.getString("name")
-        val artist = fullname.split("::")(0).trim
-        val name = fullname.split("::")(1).trim
-        val fullduration = currentItem.getString("duration")
-        val duration = Integer.parseInt(fullduration.split(":")(0).trim) * 60 +
-          Integer.parseInt(fullduration.split(":")(1).trim)
-        new Song(
-          name, artist,
-          currentItem.getString("url"),
-          duration,
-          currentItem.getInt("popularity"),
-          (for (genre <- 0 until currentItem.getJSONArray("genres").length()) yield {
-            currentItem.getJSONArray("genres").getString(genre)
-          }).toList,
-          currentItem.getInt("year"),
-          i
-        )
-      }).toList
-    })
+    mDatabaseHelper = new DatabaseHelper(this)
     mListView = new ListView(this)
     mListView.setOnItemClickListener(new AdapterView.OnItemClickListener {
       override def onItemClick(p1: AdapterView[_], p2: View, pos: Int, p4: Long): Unit = {
@@ -77,7 +51,7 @@ class MainActivity extends Activity with LoaderCallbacks[List[PlayList]] {
   override def onLoadFinished(p1: Loader[List[PlayList]], p2: List[PlayList]): Unit = {
     if (p2.isEmpty) {
       Thread.sleep(2000)
-      getLoaderManager.restartLoader(0, null, this)
+      getLoaderManager.restartLoader(0, null, this).forceLoad()
     }
     mPlaylists = p2
     mListViewAdapter = new ArrayAdapter(this, android.R.layout.simple_list_item_1, mPlaylists.map(_.name).toArray)
