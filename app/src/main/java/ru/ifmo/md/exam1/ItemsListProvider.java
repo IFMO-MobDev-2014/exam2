@@ -101,9 +101,9 @@ public class ItemsListProvider extends ContentProvider implements BaseColumns {
                 case "songs":
                     return db.query(SONGS, null, null, null, null, null, null);
                 case "playlist":
-                    return db.rawQuery("SELECT * FROM " + SONGS + " WHERE " + _ID +
-                                    " = (SELECT " + SONG_INFO + " FROM " + PLAYLISTS +
-                                    " WHERE " + PLAYLIST_REF + " = ?)",
+                    return db.rawQuery("SELECT Song.* FROM " + SONGS + " AS Song, " + PLAYLISTS + " AS Playlist " +
+                                    " WHERE Song." + _ID + " = Playlist." + SONG_INFO + " AND" +
+                                    " Playlist." + PLAYLIST_REF + " = ?",
                             new String[]{uri.getQueryParameter("playlistId")});
                 case "playlistNames":
                     return db.query(PLAYLIST_NAMES, null, null, null, null, null, null);
