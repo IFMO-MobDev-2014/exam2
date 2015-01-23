@@ -232,7 +232,7 @@ public class DBAdapter {
         return db.query(TABLE_NAME_TRACKS_PLAYLISTS + " AS p JOIN " + TABLE_NAME_TRACKS + " AS t ON " +
                         "p." + KEY_TRACKS_PLAYLISTS_TRACK_ID + "= t." + KEY_ID,
                 new String[]{"t." + KEY_ID + " AS " + KEY_ID, KEY_TRACKS_ARTIST, KEY_TRACKS_NAME, KEY_TRACKS_YEAR, KEY_TRACKS_POPULARITY},
-                "p." + KEY_ID + "=" + playlistId, null, null, null, sort);
+                "p." + KEY_TRACKS_PLAYLISTS_PLAYLIST_ID + "=" + playlistId, null, null, null, sort);
 
     }
 

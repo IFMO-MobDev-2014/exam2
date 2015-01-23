@@ -5,14 +5,20 @@ import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.SimpleCursorAdapter;
+import android.widget.Spinner;
 import android.widget.TextView;
+import android.widget.Toast;
 
 
-public class DetailsActivity extends ActionBarActivity {
+public class DetailsActivity extends ActionBarActivity implements View.OnClickListener {
 
     long trackId = -1;
 
     public static final String EXTRA_ID = "trackId";
+
+    Spinner spPlaylist;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -26,6 +32,11 @@ public class DetailsActivity extends ActionBarActivity {
             ((TextView) findViewById(R.id.tvYear)).setText(c.getString(c.getColumnIndex(DBAdapter.KEY_TRACKS_YEAR)));
             ((TextView) findViewById(R.id.tvPopularity)).setText(c.getString(c.getColumnIndex(DBAdapter.KEY_TRACKS_POPULARITY)));
         }
+        findViewById(R.id.btnAdd).setOnClickListener(this);
+        spPlaylist = (Spinner) findViewById(R.id.spPlaylists);
+        spPlaylist.setAdapter(new SimpleCursorAdapter(this,
+                android.R.layout.simple_dropdown_item_1line, DBAdapter.getOpenedInstance(this).getPlaylists(null),
+                new String[]{DBAdapter.KEY_PLAYLISTS_NAME}, new int[]{android.R.id.text1}));
     }
 
     @Override
@@ -46,5 +57,13 @@ public class DetailsActivity extends ActionBarActivity {
         }
 
         return super.onOptionsItemSelected(item);
+    }
+
+    @Override
+    public void onClick(View v) {
+        if (v.getId() == R.id.btnAdd) {
+            DBAdapter.getOpenedInstance(this).addTrackToPlaylist(trackId, spPlaylist.getSelectedItemId());
+            Toast.makeText(this, "Done", Toast.LENGTH_SHORT).show();
+        }
     }
 }
