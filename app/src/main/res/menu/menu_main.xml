@@ -13,9 +13,9 @@
           android:icon="@drawable/ic_action_new"
           app:showAsAction="ifRoom"/>
 
-    <item android:id="@+id/change_sort_order"
-          android:title="@string/action_settings"
-          android:icon="@drawable/ic_action_sort_by_size"
-          app:showAsAction="ifRoom"/>
+    <!--<item android:id="@+id/change_sort_order"-->
+          <!--android:title="@string/action_settings"-->
+          <!--android:icon="@drawable/ic_action_sort_by_size"-->
+          <!--app:showAsAction="ifRoom"/>-->
 
 </menu>

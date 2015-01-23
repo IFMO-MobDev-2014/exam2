@@ -44,7 +44,6 @@ public class MContentProvider extends ContentProvider {
             case 2: cursor = msqLiteHelper.getReadableDatabase().query(MSQLiteHelper.TABLE_B, projection, selection, selectionArgs, sortOrder, null, null); break;
             case 3: cursor = msqLiteHelper.getReadableDatabase().query(MSQLiteHelper.TABLE_C, projection, selection, selectionArgs, sortOrder, null, null); break;
         }
-        //if (cursor == null) throw new Error();
         cursor.setNotificationUri(getContext().getContentResolver(), uri);
         return cursor;
     }

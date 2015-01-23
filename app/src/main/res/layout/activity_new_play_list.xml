@@ -1,0 +1,29 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                xmlns:tools="http://schemas.android.com/tools"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:orientation="vertical"
+                tools:context="ru.ya.exam2.activities.NewPlayListActivity">
+    <EditText
+        android:id="@+id/play_edit_name"
+        android:layout_width="match_parent"
+        android:hint="@string/play_list_name"
+        android:layout_height="wrap_content"/>
+   <EditText
+        android:id="@+id/play_edit_artist"
+        android:layout_width="match_parent"
+        android:hint="@string/hint_artist"
+        android:layout_height="wrap_content"/>
+
+    <Spinner
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/spinner"/>
+
+    <ListView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/play_list"/>
+
+
+</LinearLayout>
