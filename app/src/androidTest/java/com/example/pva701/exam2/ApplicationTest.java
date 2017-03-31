@@ -1,4 +1,4 @@
-package ru.ifmo.md.exam1;
+package com.example.pva701.exam2;
 
 import android.app.Application;
 import android.test.ApplicationTestCase;
